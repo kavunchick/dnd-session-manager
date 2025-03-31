@@ -1,0 +1,23 @@
+package com.dndmanager.domain
+
+import io.quarkus.hibernate.orm.panache.kotlin.PanacheCompanion
+import jakarta.persistence.*
+
+@Entity
+@Table(name = "locations")
+open class Location (
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    var session: Session,
+
+    @Column(nullable = false)
+    var name: String,
+
+    @Column(columnDefinition = "TEXT")
+    var description: String?
+) : BaseEntity() {
+
+    companion object : PanacheCompanion<Location>
+
+}
