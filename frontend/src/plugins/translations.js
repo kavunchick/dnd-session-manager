@@ -35,11 +35,22 @@ const i18n = createI18n({
             },
             character: {
                 create: {
+                    class: "Class",
                     race: "Race",
                     background: "Background",
-                    species: "Species",
                     abilities: "Abilities",
                     chooseRace: "Choose a Class"
+                },
+                alignment: {
+                    lawfulGood: "Lawful Good",
+                    neutralGood: "Neutral Good",
+                    chaoticGood: "Chaotic Good",
+                    lawfulNeutral: "Lawful Neutral",
+                    trueNeutral: "True Neutral",
+                    chaoticNeutral: "Chaotic Neutral",
+                    lawfulEvil: "Lawful Evil",
+                    neutralEvil: "Neutral Evil",
+                    chaoticEvil: "Chaotic Evil"
                 }
             }
         },

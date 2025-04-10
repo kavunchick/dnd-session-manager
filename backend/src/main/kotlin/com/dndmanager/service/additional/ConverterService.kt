@@ -79,6 +79,10 @@ class ConverterService {
         EquipmentGetDTO(id ?: 0, name, description ?: "", suggestedPriceGp, weight)
     }
 
+    fun toGetDTO(classEntity: Class): ClassGetDTO = classEntity.run {
+        ClassGetDTO(id ?: 0, name, image, description ?: "", hitPointDie)
+    }
+
     fun toGetDTO(ci: CharacterInventory): CharacterInventoryGetDTO = ci.run {
         CharacterInventoryGetDTO(id ?: 0, amount, toFindDTO(equipment))
     }
@@ -109,7 +113,7 @@ class ConverterService {
         race.run { RaceFindDTO(id ?: 0, name) }
 
     fun toFindDTO(classEntity: Class): ClassFindDTO =
-        classEntity.run { ClassFindDTO(id ?: 0, name) }
+        classEntity.run { ClassFindDTO(id ?: 0, name, description, image) }
 
     fun toFindDTO(equipment: Equipment): EquipmentFindDTO =
         equipment.run { EquipmentFindDTO(id ?: 0, name, weight) }

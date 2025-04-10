@@ -5,47 +5,74 @@ import StepPanels from 'primevue/steppanels';
 import Step from 'primevue/step';
 import StepPanel from 'primevue/steppanel';
 import Button from "primevue/button";
-
 import {useI18n} from "vue-i18n";
+import {reactive} from "vue";
+import CharacterClassComponent from "@/components/CharacterCreation/Class/CharacterClassComponent.vue";
+import CharacterRaceComponent from "@/components/CharacterCreation/Race/CharacterRaceComponent.vue";
+import CharacterBackgroundComponent from "@/components/CharacterCreation/CharacterBackgroundComponent.vue";
 
-const {t} = useI18n()
+const character = reactive({
+    class: null,
+    background: null,
+    race: null,
+    abilities: null
+});
 
-function loadRaces() {
+function handleStepSubmit(stepValue, payload, activateCallback) {
+    if (stepValue === '1')
+        character.class = payload;
+    else if (stepValue === '2')
+        character.background = payload;
+    else if (stepValue === '3')
+        character.race = payload;
+    else if (stepValue === '4')
+        character.abilities = payload;
+    const nextStep = (parseInt(stepValue) + 1).toString();
+    activateCallback(nextStep);
 }
 
+const {t} = useI18n()
 </script>
 
 <template>
     <div class="m-8">
         <Stepper value="1" linear>
             <StepList>
-                <Step value="1">{{ t('character.create.race') }}</Step>
+                <Step value="1">{{ t('character.create.class') }}</Step>
                 <Step value="2">{{ t('character.create.background') }}</Step>
-                <Step value="3">{{ t('character.create.species') }}</Step>
+                <Step value="3">{{ t('character.create.race') }}</Step>
                 <Step value="4">{{ t('character.create.abilities') }}</Step>
             </StepList>
             <StepPanels>
                 <StepPanel value="1" v-slot="{ activateCallback }">
-                    <div class="flex flex-col h-48">
-                        <div
-                            class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium">
-                            Content I
-                        </div>
-                    </div>
-                    <div class="flex pt-6 justify-end">
-                        <Button :label="t('general.next')" @click="activateCallback('2')" icon="pi pi-arrow-right" iconPos="right"/>
+                    <div class="flex flex-col justify-center items-center">
+                        <CharacterClassComponent
+                            @select="(selectedClass) => {
+                                character.class = selectedClass;
+                                activateCallback('2');
+                        }"
+                        />
                     </div>
                 </StepPanel>
                 <StepPanel value="2" v-slot="{ activateCallback }">
+                    <div class="flex flex-col justify-center items-center">
+                        <CharacterBackgroundComponent
+                            @select="(selectedBackground) => {
+                                character.background = selectedBackground;
+                                activateCallback('3');
+                        }"
+                        />
+                    </div>
                     <div class="flex pt-6 justify-between">
                         <Button :label="t('general.back')" @click="activateCallback('1')" icon="pi pi-arrow-left"/>
-                        <Button :label="t('general.next')" @click="activateCallback('3')" icon="pi pi-arrow-right" iconPos="right"/>
                     </div>
                 </StepPanel>
                 <StepPanel value="3" v-slot="{ activateCallback }">
+                    <div class="flex flex-col justify-center items-center">
+                        <CharacterRaceComponent/>
+                    </div>
                     <div class="flex pt-6 justify-between">
                         <Button :label="t('general.back')" @click="activateCallback('2')" icon="pi pi-arrow-left"/>
-                        <Button :label="t('general.next')" @click="activateCallback('4')" icon="pi pi-arrow-right" iconPos="right"/>
                     </div>
                 </StepPanel>
                 <StepPanel value="4" v-slot="{ activateCallback }">

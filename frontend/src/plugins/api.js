@@ -28,7 +28,15 @@ export const userApi = {
 }
 
 export const raceApi = {
-    async getRaceApi() {
-        const response = await axios.get("/")
+    async getRaceList() {
+        const response = await axios.get("/races")
+        return response.data
+    }
+}
+
+export const classApi = {
+    async getClassList() {
+        const response = await axios.get("/classes")
+        return response.data
     }
 }

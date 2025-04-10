@@ -4,7 +4,7 @@ INSERT INTO classes (id, name, hit_point_die) VALUES (1, 'Barbarian', 12);
 INSERT INTO classes (id, name, hit_point_die) VALUES (2, 'Bard', 8);
 INSERT INTO classes (id, name, hit_point_die) VALUES (3, 'Cleric', 8);
 INSERT INTO classes (id, name, hit_point_die) VALUES (4, 'Druid', 8);
-INSERT INTO classes (id, name, hit_point_die) VALUES (5, 'Fighter', 10);
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (5, 'Fighter', 10, 'A master of martial combat, skilled with a variety of weapons and armor.');
 INSERT INTO classes (id, name, hit_point_die) VALUES (6, 'Monk', 8);
 INSERT INTO classes (id, name, hit_point_die) VALUES (7, 'Paladin', 10);
 INSERT INTO classes (id, name, hit_point_die) VALUES (8, 'Ranger', 10);

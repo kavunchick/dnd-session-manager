@@ -11,6 +11,9 @@ open class Class(
     @Column(nullable = false)
     var name: String,
 
+    var image: String?,
+
+    @Column(columnDefinition = "TEXT")
     var description: String?,
 
     @Column(name = "hit_point_die", nullable = false)
