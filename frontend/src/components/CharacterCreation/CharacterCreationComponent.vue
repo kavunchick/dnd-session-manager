@@ -9,7 +9,7 @@ import {useI18n} from "vue-i18n";
 import {reactive} from "vue";
 import CharacterClassComponent from "@/components/CharacterCreation/Class/CharacterClassComponent.vue";
 import CharacterRaceComponent from "@/components/CharacterCreation/Race/CharacterRaceComponent.vue";
-import CharacterBackgroundComponent from "@/components/CharacterCreation/CharacterBackgroundComponent.vue";
+import CharacterBackgroundComponent from "@/components/CharacterCreation/Background/CharacterBackgroundComponent.vue";
 
 const character = reactive({
     class: null,
@@ -55,10 +55,16 @@ const {t} = useI18n()
                     </div>
                 </StepPanel>
                 <StepPanel value="2" v-slot="{ activateCallback }">
-                    <div class="flex flex-col justify-center items-center">
+                    <div class="flex flex-col ">
                         <CharacterBackgroundComponent
-                            @select="(selectedBackground) => {
-                                character.background = selectedBackground;
+                            @submit="(ch) => {
+                                character.name = ch.name;
+                                character.alignment = ch.alignment;
+                                character.background = ch.background;
+                                character.flaws = ch.flaws;
+                                character.ideals = ch.ideals;
+                                character.bonds = ch.bonds;
+                                character.image = ch.image;
                                 activateCallback('3');
                         }"
                         />

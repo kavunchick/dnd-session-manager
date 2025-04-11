@@ -15,11 +15,11 @@ function onSelectClass() { emit('select', props.clazz.id); }
     <Button @click="onSelectClass" variant="text">
         <Card>
             <template #content>
-                <div class="flex flex-row gap-4">
+                <div class="flex flex-row gap-4 w-200">
                     <img
                         :src="props.clazz.image ?? 'https://as1.ftcdn.net/jpg/05/81/46/10/1000_F_581461096_AnVuuZfcsm4ZXVlNZfqQLecvHChVRq5y.webp'"
                         :alt="props.clazz.name" class="w-80 h-60 rounded"/>
-                    <div class="flex flex-col">
+                    <div class="flex flex-col w-full1">
                         <h1 class="text-2xl font-bold text-gray-800">{{ props.clazz.name }}</h1>
                         <div class="flex justify-between items-center">
                             <ScrollPanel style="width: 100%; height: 200px">
@@ -32,7 +32,3 @@ function onSelectClass() { emit('select', props.clazz.id); }
         </Card>
     </Button>
 </template>
-
-<style scoped>
-/* Your styles here */
-</style>

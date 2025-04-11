@@ -38,20 +38,26 @@ const i18n = createI18n({
                     class: "Class",
                     race: "Race",
                     background: "Background",
+                    flaws: "Flaws",
+                    bonds: "Bonds",
+                    ideals: "Ideals",
+                    uploadImage: "Upload image",
                     abilities: "Abilities",
-                    chooseRace: "Choose a Class"
+                    chooseRace: "Choose a Class",
+                    characterName: "Character name",
+                    selectAlignment: "Select alignment",
                 },
                 alignment: {
                     lawfulGood: "Lawful Good",
                     neutralGood: "Neutral Good",
                     chaoticGood: "Chaotic Good",
                     lawfulNeutral: "Lawful Neutral",
-                    trueNeutral: "True Neutral",
                     chaoticNeutral: "Chaotic Neutral",
+                    neutral: "Neutral",
                     lawfulEvil: "Lawful Evil",
                     neutralEvil: "Neutral Evil",
                     chaoticEvil: "Chaotic Evil"
-                }
+                },
             }
         },
         ua: {}
