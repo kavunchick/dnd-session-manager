@@ -3,7 +3,7 @@ import {Form} from '@primevue/forms';
 import {InputText} from "primevue";
 import {Button} from "primevue";
 import Select from 'primevue/select';
-import {IftaLabel} from "primevue";
+import {FloatLabel} from "primevue";
 import Textarea from 'primevue/textarea';
 import {useI18n} from 'vue-i18n';
 import {onMounted, ref} from "vue";
@@ -62,8 +62,9 @@ onMounted(() => {
 <template>
     <Form v-slot="$form" :resolver @submit="onFormSubmit" class="flex flex-col gap-4 w-full sm:w-56">
         <div class="flex flex-row gap-4 w-full">
-            <div class="flex flex-col gap-1">
-                <InputText name="name" type="text" :placeholder="t('character.create.characterName')" v-model="character.name" fluid/>
+            <div class="flex flex-col gap-3">
+                <InputText name="name" type="text" :placeholder="t('character.create.characterName')"
+                           v-model="character.name" fluid/>
                 <Select
                     v-model="character.alignment"
                     :options="options"
@@ -72,22 +73,22 @@ onMounted(() => {
                     :placeholder="t('character.create.selectAlignment')"
                     class="w-full md:w-14rem"
                 />
-                <IftaLabel>
+                <FloatLabel variant="on">
                     <Textarea id="description" v-model="character.background" rows="10" cols="60" style="resize: none"/>
                     <label for="description">{{ t("character.create.background") }}</label>
-                </IftaLabel>
-                <IftaLabel>
+                </FloatLabel>
+                <FloatLabel variant="on">
                     <Textarea id="flaws" v-model="character.flaws" rows="5" cols="30" style="resize: none"/>
                     <label for="flaws">{{ t("character.create.flaws") }}</label>
-                </IftaLabel>
-                <IftaLabel>
+                </FloatLabel>
+                <FloatLabel variant="on">
                     <Textarea id="ideals" v-model="character.ideals" rows="5" cols="30" style="resize: none"/>
                     <label for="ideals">{{ t("character.create.ideals") }}</label>
-                </IftaLabel>
-                <IftaLabel>
+                </FloatLabel>
+                <FloatLabel variant="on">
                     <Textarea id="bonds" v-model="character.bonds" rows="5" cols="30" style="resize: none"/>
                     <label for="bonds">{{ t("character.create.bonds") }}</label>
-                </IftaLabel>
+                </FloatLabel>
             </div>
             <ImageUploadComponent @upload="(imageUrl) => character.image = imageUrl"/>
         </div>
