@@ -87,7 +87,7 @@ class ConverterService {
         CharacterInventoryGetDTO(id ?: 0, amount, toFindDTO(equipment))
     }
 
-    fun toGetDTO(race: Race): RaceGetDTO = race.run { RaceGetDTO(id ?: 0, name) }
+    fun toGetDTO(race: Race): RaceGetDTO = race.run { RaceGetDTO(id ?: 0, name, description) }
 
     fun toGetDTO(npc: Npc): NpcGetDTO = npc.run {
         NpcGetDTO(
@@ -110,7 +110,7 @@ class ConverterService {
         abilityBonus.run { RaceAbilityBonusFindDTO(id ?: 0, race.id ?: 0, ability.id ?: 0) }
 
     fun toFindDTO(race: Race): RaceFindDTO =
-        race.run { RaceFindDTO(id ?: 0, name) }
+        race.run { RaceFindDTO(id ?: 0, name, description) }
 
     fun toFindDTO(classEntity: Class): ClassFindDTO =
         classEntity.run { ClassFindDTO(id ?: 0, name, description, image) }

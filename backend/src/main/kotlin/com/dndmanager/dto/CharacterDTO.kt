@@ -1,6 +1,5 @@
 package com.dndmanager.dto
 
-import com.dndmanager.domain.CharacterAbility
 import com.dndmanager.domain.helper.Alignment
 
 data class CharacterCreateDTO(

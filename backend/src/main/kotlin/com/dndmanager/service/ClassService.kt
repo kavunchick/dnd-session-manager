@@ -18,7 +18,6 @@ class ClassService : BaseService<ClassCreateDTO, ClassGetDTO, ClassFindDTO, Clas
     override fun getById(id: Long, user: JsonWebToken): ClassGetDTO =
         Class.findById(id)?.let { return converter.toGetDTO(it) } ?: throw NotFoundException()
 
-
     override fun getAll(user: JsonWebToken): List<ClassFindDTO> = Class.listAll().map(converter::toFindDTO)
 
     override fun delete(id: Long, user: JsonWebToken) = throw NotImplementedError()

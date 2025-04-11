@@ -1,17 +1,17 @@
 -- D&D 5e default rules --
 -- Classes
-INSERT INTO classes (id, name, hit_point_die) VALUES (1, 'Barbarian', 12);
-INSERT INTO classes (id, name, hit_point_die) VALUES (2, 'Bard', 8);
-INSERT INTO classes (id, name, hit_point_die) VALUES (3, 'Cleric', 8);
-INSERT INTO classes (id, name, hit_point_die) VALUES (4, 'Druid', 8);
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (1, 'Barbarian', 12, 'With a huge pile of hit points, access to damage resistance to common damage types, and a general preference for large weapons, the Barbarian is a capable melee warrior who typically thrives using simple, repeatable tactics. Rage allows the Barbarian to be exceptionally durable during a few fights per day, allowing you to act aggressively while shrugging off blows that would quickly drop other characters.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (2, 'Bard', 8, 'A jack of all trades, the bard falls somewhere between the rogue’s capability with skills and the sorcerer’s capabilities with magic. If you want to do a little bit of everything, the Bard is a great choice. With more skills than most characters, Expertise, and full spellcasting, you can build a bard to fill nearly any roll in your party.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (3, 'Cleric', 8, 'While novice players overlook the Cleric for fear of becoming a “healbot”, the Cleric is a much more interesting class than that. Diverse, powerful, and backed up by an amazing spell list, clerics can fill a variety of roles in the party and support many play styles. They do still have the best healing options in the game, but most clerics spend more time smashing through fights with Spirit Guardians than they do spamming Cure Wounds.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (4, 'Druid', 8, 'Divine spellcasters with a close bond to nature, druids are primarily spellcasters and thrive when controlling their environment with area control spells. They match the Cleric’s healing capabilities, but present a very different playstyle otherwise. Among their most iconic options is Wild Shape, allowing you temporarily adopt the form of an animal.');
 INSERT INTO classes (id, name, hit_point_die, description) VALUES (5, 'Fighter', 10, 'A master of martial combat, skilled with a variety of weapons and armor.');
-INSERT INTO classes (id, name, hit_point_die) VALUES (6, 'Monk', 8);
-INSERT INTO classes (id, name, hit_point_die) VALUES (7, 'Paladin', 10);
-INSERT INTO classes (id, name, hit_point_die) VALUES (8, 'Ranger', 10);
-INSERT INTO classes (id, name, hit_point_die) VALUES (9, 'Rogue', 8);
-INSERT INTO classes (id, name, hit_point_die) VALUES (10, 'Sorcerer', 6);
-INSERT INTO classes (id, name, hit_point_die) VALUES (11, 'Warlock', 8);
-INSERT INTO classes (id, name, hit_point_die) VALUES (12, 'Wizard', 6);
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (6, 'Monk', 8, 'The iconic unarmed combatant, monks are capable of many superheroic physical feats without the use of spells. They’re a comlex class to build and play successfully, but their niche between the fighter and the rogue can make them a lot of fun. Unfortunately, the mechanical requirements of the class mean that monk builds are extremely homogenous and there is very little room to deviate without feeling like your character is underperforming the rest of your party.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (7, 'Paladin', 10, 'Warriors powered by their commitent to a cause, the Paladin is nearly always a heavily-armored melee character, equally capable of smiting their enemies and healing their allies. Their dependence on Charisma also makes them capable in social situations where similar classes like the barbarian and the Fighter often struggle. Because the Paladin’s capabilities touch on so many mechanics, paladins are very mechanically satisfying to play and can be a great way to quickly master 5e’s mechanics.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (8, 'Ranger', 10, 'Skilled hunters and trackers who blend martial prowess with nature magic, Rangers excel at exploration and survival. Often lightly armored and wielding ranged or finesse weapons, they’re especially effective against chosen foes, called favored enemies. With a mix of utility spells, battlefield control, and damage-dealing, Rangers thrive in outdoor adventures. Their versatility makes them a great choice for players who enjoy tactical combat and the freedom to play a scout, sniper, or beast-mastering wilderness guide.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (9, 'Rogue', 8, 'More than just the orphaned thief stereotype, rogues are cunning, highly-skilled characters capable of solving many problems and filling many roles within a party. The Rogue’s signature combat ability is Sneak Attack, which encourages you to use positioning, stealth, and clever tactics to deliver powerful single hits.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (10, 'Sorcerer', 6, 'Spellcasters that draw their power from something innate about themselves, such as draconic ancestry. Sorcerers rely on a small number of spells known compared to other spellcasters, but their Metamagic feature allows them to customize those spells to suit the needs of their situation. Players who enjoy the power of the Wizard but don’t want the complexity of managing a spellbook will find the Sorcerer very satisfying.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (11, 'Warlock', 8, 'Warlocks draw their power from a pact made with a powerful entity of some kind. Mechanically, the Warlock is delightfully weird compared to other options, offering a huge number of customization points and entirely unique spellcasting resource that makes them feel and play very differently from other spellcasters.');
+INSERT INTO classes (id, name, hit_point_die, description) VALUES (12, 'Wizard', 6, 'Among the most iconic spellcasters in DnD, the Wizard is your iconic book-bearing magical scholar. Their spell list is the largest in the game and includes many of the best spells in the game, plus their ability to collect spells and cast any ritual that they know makes the Wizard an excellent utility caster on top of their ability to hurl fireballs.');
 
 -- Equipment
 INSERT INTO equipment (id, description, name, suggested_price_gp, weight) VALUES (1, '', 'Abacus', 2, 2);
@@ -308,12 +308,13 @@ INSERT INTO abilities (id, description, name) VALUES (5, 'Strength measures bodi
 INSERT INTO abilities (id, description, name) VALUES (6, 'Wisdom reflects how attuned you are to the world around you and represents perceptiveness and intuition.\nA Wisdom check might reflect an effort to read body language, understand someone''s feelings, notice things about the environment, or care for an injured person. The Animal Handling, Insight, Medicine, Perception, and Survival skills reflect aptitude in certain kinds of Wisdom checks.', 'WIS');
 
 -- Races
-INSERT INTO races (id, name, size, speed) VALUES (1, 'Dragonborn', 2, 30);
-INSERT INTO races (id, name, size, speed) VALUES (2, 'Dwarf', 2, 25);
-INSERT INTO races (id, name, size, speed) VALUES (3, 'Elf', 2, 30);
-INSERT INTO races (id, name, size, speed) VALUES (4, 'Gnome', 1, 25);
-INSERT INTO races (id, name, size, speed) VALUES (5, 'Half-Elf', 2, 30);
-INSERT INTO races (id, name, size, speed) VALUES (6, 'Half-Orc', 2, 30);
-INSERT INTO races (id, name, size, speed) VALUES (7, 'Halfling', 1, 25);
-INSERT INTO races (id, name, size, speed) VALUES (8, 'Human', 2, 30);
-INSERT INTO races (id, name, size, speed) VALUES (9, 'Tiefling', 2, 30);
+INSERT INTO races (id, name, size, speed, description) VALUES
+                                                           (1, 'Dragonborn', 2, 30, 'Proud and honorable, Dragonborn are draconic humanoids with powerful breath weapons and a natural affinity for leadership. Their imposing presence and elemental heritage make them fierce warriors and noble champions.'),
+                                                           (2, 'Dwarf', 2, 25, 'Hardy and stoic, Dwarves are known for their resilience, craftsmanship, and deep connection to stone and metal. They thrive underground and in battle, boasting high constitution and resistance to poison.'),
+                                                           (3, 'Elf', 2, 30, 'Graceful and perceptive, Elves are long-lived beings attuned to magic and nature. With keen senses and agility, they make excellent scouts, mages, and archers, thriving in both woodland and arcane settings.'),
+                                                           (4, 'Gnome', 1, 25, 'Inquisitive and energetic, Gnomes are small folk with big personalities. Their cleverness and innate magical talents make them natural inventors, illusionists, and tricksters.'),
+                                                           (5, 'Half-Elf', 2, 30, 'Born of two worlds, Half-Elves combine the best traits of humans and elves. They are versatile, charismatic, and socially adept, thriving in both courtly intrigue and adventurous exploits.'),
+                                                           (6, 'Half-Orc', 2, 30, 'Strong and fierce, Half-Orcs channel their orcish heritage into raw power and tenacity. Whether as warriors or barbarians, they excel in melee combat and can fight through wounds that would fell others.'),
+                                                           (7, 'Halfling', 1, 25, 'Cheerful and nimble, Halflings are known for their luck, bravery, and love of comfort. Their small stature and natural stealth make them ideal rogues, scouts, and unexpected heroes.'),
+                                                           (8, 'Human', 2, 30, 'Ambitious and adaptable, Humans are the most versatile race in the realms. With diverse talents and endless potential, they can fit nearly any role and thrive in all walks of life.'),
+                                                           (9, 'Tiefling', 2, 30, 'Marked by infernal heritage, Tieflings possess a natural resistance to fire and an affinity for magic. Often misunderstood, they wield dark power and a fierce independence, making them enigmatic and powerful adventurers.');

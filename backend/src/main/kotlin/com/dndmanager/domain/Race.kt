@@ -11,6 +11,7 @@ open class Race (
     @Column(nullable = false)
     var name: String,
 
+    @Column(columnDefinition = "TEXT")
     var description: String?,
 
     @Column(nullable = false)
