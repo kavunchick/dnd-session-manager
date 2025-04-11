@@ -13,7 +13,13 @@ import CharacterBackgroundComponent from "@/components/CharacterCreation/Backgro
 
 const character = reactive({
     class: null,
+    name: null,
+    alignment: null,
     background: null,
+    flaws: null,
+    ideals: null,
+    bonds: null,
+    image: null,
     race: null,
     abilities: null
 });
@@ -75,7 +81,11 @@ const {t} = useI18n()
                 </StepPanel>
                 <StepPanel value="3" v-slot="{ activateCallback }">
                     <div class="flex flex-col justify-center items-center">
-                        <CharacterRaceComponent/>
+                        <CharacterRaceComponent
+                            @select="(selectedRace) => {
+                                character.race = selectedRace;
+                                activateCallback('4');
+                        }"/>
                     </div>
                     <div class="flex pt-6 justify-between">
                         <Button :label="t('general.back')" @click="activateCallback('2')" icon="pi pi-arrow-left"/>

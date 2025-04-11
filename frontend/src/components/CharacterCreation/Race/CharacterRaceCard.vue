@@ -2,12 +2,17 @@
 import ScrollPanel from "primevue/scrollpanel";
 import Card from "primevue/card";
 import {Button} from "primevue";
+import {defineEmits} from "vue";
 
 const props = defineProps(['race']);
+const emit = defineEmits(['select']);
+
+function onSelectRace() { emit('select', props.race.id); }
+
 </script>
 
 <template>
-    <Button @click="console.log(props.clazz.id)" variant="text">
+    <Button @click="onSelectRace" variant="text">
         <Card>
             <template #content>
                 <div class="flex flex-row gap-4">
