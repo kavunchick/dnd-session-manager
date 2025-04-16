@@ -5,6 +5,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 
+//TODO separate race abilities and class abilities
 @Entity
 @Table(name = "abilities")
 open class Ability(

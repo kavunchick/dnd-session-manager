@@ -8,6 +8,9 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "classes")
 open class Class(
+    //TODO Abilities specific to class ClassAbilitySpecific (Class specifies abilities like rage with Barbarians)
+    //TODO Bonus
+
     @Column(nullable = false)
     var name: String,
 
