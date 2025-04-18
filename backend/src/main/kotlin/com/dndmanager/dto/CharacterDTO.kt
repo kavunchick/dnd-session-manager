@@ -8,14 +8,14 @@ data class CharacterCreateDTO(
     val ideals: String?,
     val bonds: String?,
     val flaws: String?,
-    val imageURI: String?,
-    val personalityTraits: String?,
+    val image: String?,
     val alignment: Alignment,
     val classId: Long,
     val raceId: Long,
-    val raceAbilityId: Long,
-    val createdBy: String
-) : BaseCreateDTO()
+    val traits: String?,
+    val stats: MutableList<Int>,
+//    val raceAbilityId: Long,
+    ) : BaseCreateDTO()
 
 data class CharacterUpdateDTO(
     val name: String?,
@@ -28,7 +28,7 @@ data class CharacterUpdateDTO(
     val alignment: Alignment?,
     val classId: Long?,
     val raceId: Long?,
-    val raceAbilityId: Long?
+//    val raceAbilityId: Long?
 ) : BaseUpdateDTO()
 
 data class CharacterFindDTO(
@@ -51,5 +51,5 @@ data class CharacterGetDTO(
     val alignment: Alignment,
     val characterClass: ClassFindDTO,
     val characterRace: RaceFindDTO,
-    val raceAbilityBonus: RaceAbilityBonusFindDTO
+//    val raceAbilityBonus: RaceAbilityBonusFindDTO
 ) : BaseGetDTO()

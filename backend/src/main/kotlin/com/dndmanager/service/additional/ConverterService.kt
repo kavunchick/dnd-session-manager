@@ -18,10 +18,10 @@ class ConverterService {
 
     fun toEntity(user: User, characterDto: CharacterCreateDTO): Character = characterDto.run {
         Character(
-            name, background, ideals, bonds, flaws, null, personalityTraits, alignment,
+            name, background, ideals, bonds, flaws, image, traits, alignment,
             Class.findById(classId) ?: throw NotFoundException(),
-            Race.findById(raceId) ?: throw NotFoundException(),
-            RaceAbilityBonus.findById(raceAbilityId) ?: throw NotFoundException(), user
+            Race.findById(raceId) ?: throw NotFoundException(), stats, user
+//            RaceAbilityBonus.findById(raceAbilityId) ?: throw NotFoundException(), user
         )
     }
 
@@ -71,7 +71,8 @@ class ConverterService {
     fun toGetDTO(character: Character): CharacterGetDTO = character.run {
         CharacterGetDTO(
             id ?: 0, name, background, ideals, bonds, flaws, imageURI, personalityTraits, alignment,
-            toFindDTO(characterClass), toFindDTO(race), toFindDTO(abilityBonus)
+            toFindDTO(characterClass), toFindDTO(race),
+//            toFindDTO(abilityBonus)
         )
     }
 
@@ -148,8 +149,9 @@ class ConverterService {
             characterDto.alignment ?: alignment,
             characterDto.classId?.let { Class.findById(it) ?: throw NotFoundException() } ?: character.characterClass,
             characterDto.raceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: character.race,
-            characterDto.raceAbilityId?.let { RaceAbilityBonus.findById(it) ?: throw NotFoundException() }
-                ?: character.abilityBonus, createdBy
+//            characterDto.raceAbilityId?.let { RaceAbilityBonus.findById(it) ?: throw NotFoundException() }
+//                ?: character.abilityBonus,
+            stats, createdBy
         )
     }
 

@@ -15,7 +15,7 @@ function onSelectRace() { emit('select', props.race.id); }
     <Button @click="onSelectRace" variant="text">
         <Card>
             <template #content>
-                <div class="flex flex-row gap-4">
+                <div class="flex flex-row gap-4 w-150">
                     <img
                         :src="race.image ?? 'https://as1.ftcdn.net/jpg/05/81/46/10/1000_F_581461096_AnVuuZfcsm4ZXVlNZfqQLecvHChVRq5y.webp'"
                         :alt="race.name" class="w-80 h-60 rounded"/>

@@ -10,8 +10,8 @@ open class Npc (
     @Column(nullable = false)
     var name: String,
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    var description: String,
+    @Column(columnDefinition = "TEXT")
+    var description: String?,
 
     @Column(nullable = false)
     var health: Short,

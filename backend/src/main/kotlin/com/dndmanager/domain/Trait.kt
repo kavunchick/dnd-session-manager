@@ -7,7 +7,7 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "traits")
-open class Trait (
+open class Trait(
 
     @Column(nullable = false)
     var name: String,

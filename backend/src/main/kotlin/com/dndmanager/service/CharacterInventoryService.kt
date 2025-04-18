@@ -3,7 +3,10 @@ package com.dndmanager.service
 import com.dndmanager.domain.CharacterInventory
 import com.dndmanager.domain.Equipment
 import com.dndmanager.domain.SessionsCharacter
-import com.dndmanager.dto.*
+import com.dndmanager.dto.CharacterInventoryCreateDTO
+import com.dndmanager.dto.CharacterInventoryFindDTO
+import com.dndmanager.dto.CharacterInventoryGetDTO
+import com.dndmanager.dto.CharacterInventoryUpdateDTO
 import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
@@ -19,7 +22,7 @@ class CharacterInventoryService :
 
     override fun getById(id: Long, user: JsonWebToken): CharacterInventoryGetDTO {
         val ci = CharacterInventory.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(ci);
+        return converter.toGetDTO(ci)
     }
 
     override fun getAll(user: JsonWebToken): List<CharacterInventoryFindDTO> {

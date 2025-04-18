@@ -35,8 +35,8 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
     override fun create(dto: CharacterCreateDTO, user: JsonWebToken): CharacterGetDTO {
         if (Race.findById(dto.raceId) == null) throw NotFoundException()
         if (Class.findById(dto.classId) == null) throw NotFoundException()
-        if (RaceAbilityBonus.findById(dto.raceAbilityId) == null) throw NotFoundException()
-        val user: User = User.find("sub = ?1", dto.createdBy).firstResult() ?: throw NotFoundException()
+//        if (RaceAbilityBonus.findById(dto.raceAbilityId) == null) throw NotFoundException()
+        val user: User = User.find("sub = ?1", user.name).firstResult() ?: throw NotFoundException()
         val character = converter.toEntity(user, dto)
         character.persistAndFlush()
         return converter.toGetDTO(character)

@@ -15,7 +15,7 @@ open class SessionsCharacter (
     @JoinColumn(name = "character_id", nullable = false)
     var character: Character,
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Character::class)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = CharacterInventory::class)
     @JoinColumn(name = "inventory_id", nullable = false)
     var inventory: List<CharacterInventory>,
 

@@ -17,7 +17,12 @@ export const characterApi = {
     async getCharacterList() {
         const response = await axios.get("/characters")
         return response.data
-    }
+    },
+
+    async createCharacter(body) {
+        const response = await axios.put("/characters", body)
+        return response.data
+    },
 }
 
 export const userApi = {

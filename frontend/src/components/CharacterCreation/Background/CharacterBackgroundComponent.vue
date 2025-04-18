@@ -18,6 +18,7 @@ const character = ref({
     flaws: null,
     ideals: null,
     bonds: null,
+    traits: null,
     image: null
 });
 
@@ -89,9 +90,13 @@ onMounted(() => {
                     <Textarea id="bonds" v-model="character.bonds" rows="5" cols="30" style="resize: none"/>
                     <label for="bonds">{{ t("character.create.bonds") }}</label>
                 </FloatLabel>
+                <FloatLabel variant="on">
+                    <Textarea id="traits" v-model="character.traits" rows="5" cols="30" style="resize: none"/>
+                    <label for="traits">{{ t("character.create.traits") }}</label>
+                </FloatLabel>
             </div>
             <ImageUploadComponent @upload="(imageUrl) => character.image = imageUrl"/>
         </div>
-        <Button type="submit" severity="secondary" label="Submit" @click="emit('submit', character)"/>
+        <Button type="submit" severity="secondary" :label="t('general.submit')" @click="emit('submit', character)"/>
     </Form>
 </template>

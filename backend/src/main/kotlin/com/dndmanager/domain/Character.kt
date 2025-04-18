@@ -34,9 +34,11 @@ open class Character(
     @JoinColumn(nullable = false)
     var race: Race,
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ability_bonus", nullable = false)
-    var abilityBonus: RaceAbilityBonus,
+    var stats: MutableList<Int>,
+//
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "ability_bonus", nullable = false)
+//    var abilityBonus: RaceAbilityBonus,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)

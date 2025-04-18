@@ -6,31 +6,43 @@ import Step from 'primevue/step';
 import StepPanel from 'primevue/steppanel';
 import Button from "primevue/button";
 import {useI18n} from "vue-i18n";
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import CharacterClassComponent from "@/components/CharacterCreation/Class/CharacterClassComponent.vue";
 import CharacterRaceComponent from "@/components/CharacterCreation/Race/CharacterRaceComponent.vue";
 import CharacterBackgroundComponent from "@/components/CharacterCreation/Background/CharacterBackgroundComponent.vue";
+import AssignStatsComponent from "@/components/CharacterCreation/Stats/AssignStatsComponent.vue";
+import {characterApi} from "@/plugins/api.js";
 
 const character = reactive({
-    class: null,
     name: null,
-    alignment: null,
     background: null,
-    flaws: null,
     ideals: null,
     bonds: null,
+    flaws: null,
     image: null,
-    race: null,
-    abilities: null
+    alignment: null,
+    classId: null,
+    raceId: null,
+    traits: null,
+    stats: null
+    // abilities: null,
 });
+
+function createCharacter() {
+    character.stats = Object.values(statsCmp.value.getStats())
+    console.log(character.stats)
+    characterApi.createCharacter(character)
+}
+
+const statsCmp = ref(null)
 
 function handleStepSubmit(stepValue, payload, activateCallback) {
     if (stepValue === '1')
-        character.class = payload;
+        character.classId = payload;
     else if (stepValue === '2')
         character.background = payload;
     else if (stepValue === '3')
-        character.race = payload;
+        character.raceId = payload;
     else if (stepValue === '4')
         character.abilities = payload;
     const nextStep = (parseInt(stepValue) + 1).toString();
@@ -54,7 +66,7 @@ const {t} = useI18n()
                     <div class="flex flex-col justify-center items-center">
                         <CharacterClassComponent
                             @select="(selectedClass) => {
-                                character.class = selectedClass;
+                                character.classId = selectedClass;
                                 activateCallback('2');
                         }"
                         />
@@ -70,6 +82,7 @@ const {t} = useI18n()
                                 character.flaws = ch.flaws;
                                 character.ideals = ch.ideals;
                                 character.bonds = ch.bonds;
+                                character.traits = ch.traits;
                                 character.image = ch.image;
                                 activateCallback('3');
                         }"
@@ -83,7 +96,7 @@ const {t} = useI18n()
                     <div class="flex flex-col justify-center items-center">
                         <CharacterRaceComponent
                             @select="(selectedRace) => {
-                                character.race = selectedRace;
+                                character.raceId = selectedRace;
                                 activateCallback('4');
                         }"/>
                     </div>
@@ -92,8 +105,12 @@ const {t} = useI18n()
                     </div>
                 </StepPanel>
                 <StepPanel value="4" v-slot="{ activateCallback }">
-                    <div class="flex pt-6">
+                    <div>
+                        <AssignStatsComponent ref="statsCmp"/>
+                    </div>
+                    <div class="flex pt-6 justify-between">
                         <Button :label="t('general.back')" @click="activateCallback('3')" icon="pi pi-arrow-left"/>
+                        <Button type="submit" severity="secondary" :label="t('general.submit')" @click="createCharacter"/>
                     </div>
                 </StepPanel>
             </StepPanels>

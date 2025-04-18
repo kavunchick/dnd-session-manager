@@ -4,7 +4,7 @@ import com.dndmanager.domain.helper.Alignment
 
 data class NpcCreateDTO(
     val name: String,
-    val description: String,
+    val description: String?,
     val health: Short,
     val alignment: Alignment,
     val npcClassId: Long,
@@ -29,7 +29,7 @@ data class NpcUpdateDTO(
 data class NpcGetDTO(
     val id: Long,
     val name: String,
-    val description: String,
+    val description: String?,
     val health: Short,
     val alignment: Alignment,
     val npcClass: ClassFindDTO,

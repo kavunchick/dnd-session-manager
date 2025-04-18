@@ -11,7 +11,8 @@ const i18n = createI18n({
                 success: "Success!",
                 error: "Error",
                 next: "Next",
-                back: "Back"
+                back: "Back",
+                submit: "Submit",
             },
             menu: {
                 titles: {
@@ -41,11 +42,13 @@ const i18n = createI18n({
                     flaws: "Flaws",
                     bonds: "Bonds",
                     ideals: "Ideals",
+                    traits: "Traits",
                     uploadImage: "Upload image",
                     abilities: "Abilities",
                     chooseRace: "Choose a Class",
                     characterName: "Character name",
                     selectAlignment: "Select alignment",
+                    pointsLeft: "Points left: ",
                 },
                 alignment: {
                     lawfulGood: "Lawful Good",
@@ -58,6 +61,14 @@ const i18n = createI18n({
                     neutralEvil: "Neutral Evil",
                     chaoticEvil: "Chaotic Evil"
                 },
+                stats: {
+                    strength: "Strength",
+                    dexterity: "Dexterity",
+                    constitution: "Constitution",
+                    intelligence: "Intelligence",
+                    wisdom: "Wisdom",
+                    charisma: "Charisma"
+                }
             }
         },
         ua: {}
