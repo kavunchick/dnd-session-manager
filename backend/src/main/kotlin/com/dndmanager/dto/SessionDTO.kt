@@ -2,7 +2,7 @@ package com.dndmanager.dto
 
 import java.time.Instant
 
-data class SessionFindDTO(val id: Long, val name: String, val players: List<CharacterFindDTO>) : BaseFindDTO()
+data class SessionFindDTO(val id: Long, val name: String, val players: List<CharacterFindDTO>, val createdBy: UserFindDTO) : BaseFindDTO()
 
 data class SessionCreatDTO(val name: String) : BaseCreateDTO()
 

@@ -5,11 +5,23 @@ import com.dndmanager.dto.*
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 import java.time.Instant
+import kotlin.collections.mutableListOf
 
 class ConverterService {
     // toEntity
     fun toEntity(abilityDTO: AbilityCreateDTO): Ability = abilityDTO.run {
         Ability(name, description)
+    }
+
+    fun toEntity(sessionCharacterDTO: SessionCharacterCreateDTO): SessionCharacter = sessionCharacterDTO.run {
+        println("toEntity")
+        val character = Character.findById(characterId) ?: throw NotFoundException()
+        SessionCharacter(
+            Session.findById(sessionId) ?: throw NotFoundException(),
+            character,
+            emptyList(), mutableListOf(0, 0, 0, 0, 0), 1, 0,
+            character.characterClass.hitPointDie
+        )
     }
 
     fun toEntity(userDto: UserCreateDTO): User = userDto.run {
@@ -30,7 +42,7 @@ class ConverterService {
             name,
             Instant.now(),
             null,
-            emptyList(),
+            mutableListOf(),
             User.find("sub", user.subject).firstResult() ?: throw NotFoundException()
         )
     }
@@ -42,7 +54,7 @@ class ConverterService {
     fun toEntity(ciCreateDTO: CharacterInventoryCreateDTO): CharacterInventory = ciCreateDTO.run {
         CharacterInventory(
             amount,
-            SessionsCharacter.findById(character) ?: throw NotFoundException(),
+            SessionCharacter.findById(character) ?: throw NotFoundException(),
             Equipment.findById(equipment) ?: throw NotFoundException()
         )
     }
@@ -58,6 +70,10 @@ class ConverterService {
     // toGetDTO
     fun toGetDTO(ability: Ability): AbilityGetDTO = ability.run {
         AbilityGetDTO(id ?: -1, name, description)
+    }
+
+    fun toGetDTO(sessionCharacter: SessionCharacter): SessionCharacterGetDTO = sessionCharacter.run {
+        SessionCharacterGetDTO(id ?: -1, toFindDTO(session), toFindDTO(character))
     }
 
     fun toGetDTO(user: User) = user.run {
@@ -101,8 +117,11 @@ class ConverterService {
     fun toFindDTO(ability: Ability): AbilityFindDTO =
         ability.run { AbilityFindDTO(id ?: 0, name) }
 
+    fun toFindDTO(sessionCharacter: SessionCharacter): SessionCharacterFindDTO =
+        sessionCharacter.run { SessionCharacterFindDTO(id ?: -1, toFindDTO(session), toFindDTO(character)) }
+
     fun toFindDTO(session: Session): SessionFindDTO =
-        session.run { SessionFindDTO(id ?: 0, name, characters.map { toFindDTO(it.character) }) }
+        session.run { SessionFindDTO(id ?: 0, name, characters.map { toFindDTO(it.character) }, toFindDTO(author)) }
 
     fun toFindDTO(character: Character): CharacterFindDTO =
         character.run { CharacterFindDTO(id ?: 0, name, imageURI, toFindDTO(characterClass), toFindDTO(race)) }
@@ -131,6 +150,8 @@ class ConverterService {
                 id ?: 0, name, alignment, toFindDTO(classField),
                 toFindDTO(race), isHostile, role, location?.let { toFindDTO(it) })
         }
+
+    fun toFindDTO(user: User): UserFindDTO = user.run { UserFindDTO(username, sub) }
 
     // merge
     fun merge(ability: Ability, abilityDTO: AbilityUpdateDTO): Ability = ability.run {

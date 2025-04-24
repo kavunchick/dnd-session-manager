@@ -27,11 +27,11 @@ const i18n = createI18n({
                 }
             },
             session: {
-                createSession: "Create session",
                 create: {
                     name: "Session name",
                     success: "Session was created successfully!",
-                    error: "Something went wrong during session creation :("
+                    error: "Something went wrong during session creation :(",
+                    addPlayer: "Add player",
                 }
             },
             character: {

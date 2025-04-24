@@ -2,7 +2,7 @@ package com.dndmanager.service
 
 import com.dndmanager.domain.CharacterInventory
 import com.dndmanager.domain.Equipment
-import com.dndmanager.domain.SessionsCharacter
+import com.dndmanager.domain.SessionCharacter
 import com.dndmanager.dto.CharacterInventoryCreateDTO
 import com.dndmanager.dto.CharacterInventoryFindDTO
 import com.dndmanager.dto.CharacterInventoryGetDTO
@@ -11,7 +11,6 @@ import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import jakarta.ws.rs.NotFoundException
-import jakarta.ws.rs.WebApplicationException
 import org.eclipse.microprofile.jwt.JsonWebToken
 
 @ApplicationScoped
@@ -25,9 +24,7 @@ class CharacterInventoryService :
         return converter.toGetDTO(ci)
     }
 
-    override fun getAll(user: JsonWebToken): List<CharacterInventoryFindDTO> {
-        throw WebApplicationException(501)
-    }
+    override fun getAll(user: JsonWebToken): List<CharacterInventoryFindDTO> = throw NotImplementedError()
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
@@ -37,7 +34,7 @@ class CharacterInventoryService :
     @Transactional
     override fun create(dto: CharacterInventoryCreateDTO, user: JsonWebToken): CharacterInventoryGetDTO {
         if (Equipment.count("id", dto.equipment) == 0L ||
-            SessionsCharacter.count("id", dto.character) == 0L
+            SessionCharacter.count("id", dto.character) == 0L
         ) throw NotFoundException()
         val ciEntity = converter.toEntity(dto)
         ciEntity.persistAndFlush()

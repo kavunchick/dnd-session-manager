@@ -6,7 +6,6 @@ import com.dndmanager.dto.SessionFindDTO
 import com.dndmanager.dto.SessionGetDTO
 import com.dndmanager.dto.SessionUpdateDTO
 import com.dndmanager.service.additional.ConverterService
-import io.quarkus.panache.common.Sort
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import jakarta.ws.rs.NotFoundException
@@ -23,7 +22,7 @@ class SessionService : BaseService<SessionCreatDTO, SessionGetDTO, SessionFindDT
     }
 
     override fun getAll(user: JsonWebToken): List<SessionFindDTO> {
-        val sessions = Session.listAll(Sort.by("name"))
+        val sessions = Session.list("author.sub = ?1", user.subject)
         return sessions.map { converter.toFindDTO(it) }
     }
 

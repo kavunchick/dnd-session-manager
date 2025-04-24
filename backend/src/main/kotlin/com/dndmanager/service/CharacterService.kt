@@ -10,26 +10,21 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
+import java.util.Locale.getDefault
 
 @ApplicationScoped
 class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, CharacterFindDTO, CharacterUpdateDTO> {
 
     override val converter = ConverterService()
 
-    override fun getById(id: Long, user: JsonWebToken): CharacterGetDTO {
-        val character = Character.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(character)
-    }
+    override fun getById(id: Long, user: JsonWebToken): CharacterGetDTO =
+        converter.toGetDTO(Character.findById(id) ?: throw NotFoundException())
 
-    override fun getAll(user: JsonWebToken): List<CharacterFindDTO> {
-        return Character.listAll().map { converter.toFindDTO(it) }
-    }
+    override fun getAll(user: JsonWebToken): List<CharacterFindDTO> =
+        Character.listAll().map { converter.toFindDTO(it) }
 
     @Transactional
-    override fun delete(id: Long, user: JsonWebToken) {
-        val character = Character.findById(id) ?: throw NotFoundException()
-        character.delete()
-    }
+    override fun delete(id: Long, user: JsonWebToken) = Character.findById(id)?.delete() ?: throw NotFoundException()
 
     @Transactional
     override fun create(dto: CharacterCreateDTO, user: JsonWebToken): CharacterGetDTO {
@@ -48,5 +43,12 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
         character = converter.merge(character, dto)
         character.persistAndFlush()
         return converter.toGetDTO(character)
+    }
+
+    fun findByNameAndUsername(name: String, userSub: String): List<CharacterFindDTO> {
+        val user: User = User.find("sub = ?1", userSub).firstResult() ?: throw NotFoundException()
+        val res = Character.list("createdBy = ?1 and lower(name) LIKE ?2", user, name.lowercase(getDefault()) + "%")
+            .map { converter.toFindDTO(it) }
+        return res
     }
 }

@@ -9,6 +9,7 @@ import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import org.eclipse.microprofile.jwt.JsonWebToken
+import java.util.Locale.getDefault
 
 @ApplicationScoped
 class UserService : BaseService<UserCreateDTO, UserGetDTO, UserFindDTO, UserUpdateDTO> {
@@ -42,9 +43,12 @@ class UserService : BaseService<UserCreateDTO, UserGetDTO, UserFindDTO, UserUpda
         }
     }
 
-
     @Transactional
     override fun update(id: Long, dto: UserUpdateDTO, user: JsonWebToken): UserGetDTO {
         TODO("Not yet implemented")
     }
+
+    fun findByUsername(username: String): List<UserFindDTO> =
+        User.list("lower(username) LIKE ?1", username.lowercase(getDefault()) + "%")
+            .map { converter.toFindDTO(it) }
 }

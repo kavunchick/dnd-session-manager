@@ -12,6 +12,7 @@ import CharacterRaceComponent from "@/components/CharacterCreation/Race/Characte
 import CharacterBackgroundComponent from "@/components/CharacterCreation/Background/CharacterBackgroundComponent.vue";
 import AssignStatsComponent from "@/components/CharacterCreation/Stats/AssignStatsComponent.vue";
 import {characterApi} from "@/plugins/api.js";
+import router from "@/plugins/router.js";
 
 const character = reactive({
     name: null,
@@ -32,6 +33,7 @@ function createCharacter() {
     character.stats = Object.values(statsCmp.value.getStats())
     console.log(character.stats)
     characterApi.createCharacter(character)
+    router.push("/menu");
 }
 
 const statsCmp = ref(null)

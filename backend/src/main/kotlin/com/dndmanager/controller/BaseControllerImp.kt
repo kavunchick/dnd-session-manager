@@ -8,6 +8,7 @@ import com.dndmanager.service.BaseService
 import jakarta.inject.Inject
 import jakarta.ws.rs.*
 import org.eclipse.microprofile.jwt.JsonWebToken
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody
 
 
 abstract class BaseControllerImp<
@@ -23,31 +24,20 @@ abstract class BaseControllerImp<
     lateinit var jsonWebToken: JsonWebToken
 
     @GET
-    override fun getAll(): List<F> {
-        return service.getAll(jsonWebToken)
-    }
+    override fun getAll(): List<F> = service.getAll(jsonWebToken)
 
     @GET
     @Path("/{id}")
-    override fun getById(id: Long): G {
-        return service.getById(id, jsonWebToken)
-    }
+    override fun getById(id: Long): G = service.getById(id, jsonWebToken)
 
     @PATCH
     @Path("/{id}")
-    override fun update(id: Long, updateDTO: U): G {
-        return service.update(id, updateDTO, jsonWebToken)
-    }
+    override fun update(id: Long, updateDTO: U): G = service.update(id, updateDTO, jsonWebToken)
 
     @DELETE
     @Path("/{id}")
-    override fun delete(id: Long) {
-        service.delete(id, jsonWebToken)
-    }
+    override fun delete(id: Long) = service.delete(id, jsonWebToken)
 
     @PUT
-    override fun create(createDTO: C): G {
-        return service.create(createDTO, jsonWebToken)
-    }
-
+    override fun create(@RequestBody createDTO: C): G = service.create(createDTO, jsonWebToken)
 }
