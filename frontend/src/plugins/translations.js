@@ -21,12 +21,12 @@ const i18n = createI18n({
             },
             menu: {
                 titles: {
-                    createCharacter: "Create Character",
+                    listCharacter: "Character list",
                     createSession: "Create session",
                     manageSession: "Manage session",
                 },
                 content: {
-                    createCharacter: "Use our character builder to join someone's adventure",
+                    listCharacter: "See your characters or build a new one to join someone's adventure",
                     createSession: "Start tour own journey with friends",
                     manageSession: "Keep track of already existing sessions or create a new one without any complications",
                 }
@@ -44,6 +44,12 @@ const i18n = createI18n({
                 deleteRejection: "You have rejected the deletion of the session",
             },
             character: {
+                deleteConflict: "You can't delete this character, because it is already in use",
+                deleteError: "Something went wrong during session deletion :(",
+                deleteSuccess: "Character successfully deleted",
+                updateSuccess: "Character successfully updated",
+                updateError: "Something went wrong during character update :(",
+                createButton: "Create character",
                 create: {
                     class: "Class",
                     race: "Race",
@@ -83,9 +89,14 @@ const i18n = createI18n({
                     wisdom: "Wisdom",
                     charisma: "Charisma"
                 }
+            },
+            sessionCharacter: {
+                updateMessage: "Player was updated successfully",
+                updateError: "Something went wrong during player update :(",
+                deleteMessage: "Player was removed from session successfully",
+                deleteError: "Something went wrong during player removal :(",
             }
         },
-        ua: {}
     }
 })
 

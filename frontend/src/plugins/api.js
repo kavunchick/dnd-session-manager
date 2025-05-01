@@ -61,6 +61,16 @@ export const characterApi = {
             }
         })
         return response.data
+    },
+
+    async deleteCharacter(id) {
+        const response = await axios.delete(`/characters/${id}`)
+        return response.data
+    },
+
+    async updateCharacter(characterId, character) {
+        const response = await axios.patch(`/characters/${characterId}`, character)
+        return response.data
     }
 }
 

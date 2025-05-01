@@ -10,6 +10,8 @@ import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
 import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Response
 import org.eclipse.microprofile.jwt.JsonWebToken
 import java.util.Locale.getDefault
 
@@ -22,12 +24,14 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
         converter.toGetDTO(Character.findById(id) ?: throw NotFoundException())
 
     override fun getAll(user: JsonWebToken): List<CharacterFindDTO> =
-        Character.listAll().map { converter.toFindDTO(it) }
+        Character.find("createdBy.sub = ?1", user.subject).list().map { converter.toFindDTO(it) }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
         val character = Character.findById(id) ?: throw NotFoundException()
         if (!character.isTrusted(user.subject)) throw ForbiddenException()
+        if (SessionCharacter.streamAll().anyMatch { c -> c.character.id == character.id })
+            throw WebApplicationException(Response.Status.CONFLICT)
         character.delete()
     }
 

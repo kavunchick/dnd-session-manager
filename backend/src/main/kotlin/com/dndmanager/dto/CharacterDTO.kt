@@ -28,13 +28,23 @@ data class CharacterUpdateDTO(
     val alignment: Alignment?,
     val classId: Long?,
     val raceId: Long?,
+    val stats: MutableList<Int>?,
 //    val raceAbilityId: Long?
 ) : BaseUpdateDTO()
 
 data class CharacterFindDTO(
     val id: Long,
     val name: String,
+    val background: String?,
+    val ideals: String?,
+    val bonds: String?,
+    val flaws: String?,
     val imageURI: String?,
+    val personalityTraits: String?,
+    val alignment: Alignment,
+    val characterClass: ClassFindDTO,
+    val characterRace: RaceFindDTO,
+    val stats: MutableList<Int>,
 ) : BaseFindDTO()
 
 data class CharacterGetDTO(
@@ -48,6 +58,7 @@ data class CharacterGetDTO(
     val personalityTraits: String?,
     val alignment: Alignment,
     val characterClass: ClassFindDTO,
+    val stats: MutableList<Int>,
     val characterRace: RaceFindDTO,
 //    val raceAbilityBonus: RaceAbilityBonusFindDTO
 ) : BaseGetDTO()

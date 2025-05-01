@@ -33,7 +33,7 @@ function createCharacter() {
     character.stats = Object.values(statsCmp.value.getStats())
     console.log(character.stats)
     characterApi.createCharacter(character)
-    router.push("/menu");
+    router.push("/character");
 }
 
 const statsCmp = ref(null)

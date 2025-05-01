@@ -87,7 +87,7 @@ class ConverterService {
     fun toGetDTO(character: Character): CharacterGetDTO = character.run {
         CharacterGetDTO(
             id ?: 0, name, background, ideals, bonds, flaws, imageURI, personalityTraits, alignment,
-            toFindDTO(characterClass), toFindDTO(race),
+            toFindDTO(characterClass), stats, toFindDTO(race),
 //            toFindDTO(abilityBonus)
         )
     }
@@ -124,7 +124,22 @@ class ConverterService {
         session.run { SessionFindDTO(id ?: 0, name, characters.map { toFindDTO(it.character) }, toFindDTO(author)) }
 
     fun toFindDTO(character: Character): CharacterFindDTO =
-        character.run { CharacterFindDTO(id ?: 0, name, imageURI) }
+        character.run {
+            CharacterFindDTO(
+                id ?: 0,
+                name,
+                background,
+                ideals,
+                bonds,
+                flaws,
+                imageURI,
+                personalityTraits,
+                alignment,
+                toFindDTO(characterClass),
+                toFindDTO(race),
+                stats
+            )
+        }
 
     fun toFindDTO(abilityBonus: RaceAbilityBonus): RaceAbilityBonusFindDTO =
         abilityBonus.run { RaceAbilityBonusFindDTO(id ?: 0, race.id ?: 0, ability.id ?: 0) }
@@ -183,6 +198,7 @@ class ConverterService {
             characterClass = characterDto.classId?.let { Class.findById(it) ?: throw NotFoundException() }
                 ?: character.characterClass
             race = characterDto.raceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: character.race
+            stats = characterDto.stats ?: stats
 //            characterDto.raceAbilityId?.let { RaceAbilityBonus.findById(it) ?: throw NotFoundException() }
 //                ?: character.abilityBonus,
         }
