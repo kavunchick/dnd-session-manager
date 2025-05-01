@@ -18,7 +18,9 @@ function onSelectRace() { emit('select', props.race.id); }
                 <div class="flex flex-row gap-4 w-150">
                     <img
                         :src="race.image ?? 'https://as1.ftcdn.net/jpg/05/81/46/10/1000_F_581461096_AnVuuZfcsm4ZXVlNZfqQLecvHChVRq5y.webp'"
-                        :alt="race.name" class="w-80 h-60 rounded"/>
+                        :alt="race.name"
+                        class="w-30 h-60 rounded object-cover object-right"
+                    />
                     <div class="flex flex-col">
                         <h1 class="text-2xl font-bold text-gray-800">{{ race.name }}</h1>
                         <div class="flex justify-between items-center">
