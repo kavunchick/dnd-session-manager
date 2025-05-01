@@ -51,7 +51,7 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
     }
 
     fun findByNameAndUsername(name: String, userSub: String): List<CharacterFindDTO> {
-        val user: User = User.find("sub = ?1", userSub).firstResult() ?: throw NotFoundException()
+        val user: User = User.findBySub(userSub) ?: throw NotFoundException()
         val res = Character.list("createdBy = ?1 and lower(name) LIKE ?2", user, name.lowercase(getDefault()) + "%")
             .map { converter.toFindDTO(it) }
         return res

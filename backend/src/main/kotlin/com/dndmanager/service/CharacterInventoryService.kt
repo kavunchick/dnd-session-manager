@@ -20,10 +20,8 @@ class CharacterInventoryService :
 
     override val converter = ConverterService()
 
-    override fun getById(id: Long, user: JsonWebToken): CharacterInventoryGetDTO {
-        val ci = CharacterInventory.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(ci)
-    }
+    override fun getById(id: Long, user: JsonWebToken): CharacterInventoryGetDTO =
+        CharacterInventory.findById(id)?.let { converter.toGetDTO(it) } ?: throw NotFoundException()
 
     override fun getAll(user: JsonWebToken): List<CharacterInventoryFindDTO> =
         CharacterInventory.listAll().map { converter.toFindDTO(it) }
@@ -51,12 +49,10 @@ class CharacterInventoryService :
         if (!entry.isTrusted(user.subject)) throw ForbiddenException()
         converter.merge(entry, dto)
         val res = converter.toGetDTO(entry)
-        if (entry.amount == 0)
-            entry.delete()
+        if (entry.amount == 0) entry.delete()
         return res
     }
 
-    fun getAllByCharacter(id: Long): List<CharacterInventoryFindDTO> {
-        return CharacterInventory.list("character", id).map { converter.toFindDTO(it) }
-    }
+    fun getAllByCharacter(id: Long): List<CharacterInventoryFindDTO> =
+        CharacterInventory.list("character", id).map { converter.toFindDTO(it) }
 }

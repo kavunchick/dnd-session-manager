@@ -33,15 +33,11 @@ class AbilityService :
         return converter.toGetDTO(ability)
     }
 
-    override fun getById(id: Long, user: JsonWebToken): AbilityGetDTO {
-        val ability = Ability.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(ability)
-    }
+    override fun getById(id: Long, user: JsonWebToken): AbilityGetDTO =
+        Ability.findById(id)?.let { converter.toGetDTO(it) } ?: throw NotFoundException()
 
-    override fun getAll(user: JsonWebToken): List<AbilityFindDTO> {
-        val abilities = Ability.listAll()
-        return abilities.map { converter.toFindDTO(it) }
-    }
+    override fun getAll(user: JsonWebToken): List<AbilityFindDTO> =
+        Ability.listAll().map { converter.toFindDTO(it) }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {

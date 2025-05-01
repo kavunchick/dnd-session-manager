@@ -17,15 +17,11 @@ class SessionService : BaseService<SessionCreatDTO, SessionGetDTO, SessionFindDT
 
     override val converter = ConverterService()
 
-    override fun getById(id: Long, user: JsonWebToken): SessionGetDTO {
-        val session = Session.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(session)
-    }
+    override fun getById(id: Long, user: JsonWebToken): SessionGetDTO =
+        Session.findById(id)?.let { converter.toGetDTO(it) } ?: throw NotFoundException()
 
-    override fun getAll(user: JsonWebToken): List<SessionFindDTO> {
-        val sessions = Session.list("author.sub = ?1", user.subject)
-        return sessions.map { converter.toFindDTO(it) }
-    }
+    override fun getAll(user: JsonWebToken): List<SessionFindDTO> =
+        Session.list("author.sub = ?1", user.subject).map { converter.toFindDTO(it) }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
