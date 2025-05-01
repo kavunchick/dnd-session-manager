@@ -1,13 +1,13 @@
 <script setup>
 import DataView from 'primevue/dataview';
-import {Button, Card, Dialog, InputText, Toast, useToast} from "primevue";
-import Chip from 'primevue/chip';
+import {Button, Card, Dialog, InputText, Toast, useToast, useConfirm, Chip} from "primevue";
 import {onMounted, ref, watch} from "vue";
-import {characterApi, sessionApi, userApi} from "@/plugins/api.js";
+import {characterApi, sessionApi, sessionCharacterApi, userApi} from "@/plugins/api.js";
 import {useI18n} from "vue-i18n";
 import AutoComplete from 'primevue/autocomplete';
 import Popover from 'primevue/popover';
-import {all} from "axios";
+import router from "@/plugins/router.js";
+import ConfirmPopup from 'primevue/confirmpopup';
 
 const op = ref();
 const sessions = ref([]);
@@ -15,6 +15,7 @@ const session = ref({name: ''});
 const createDialogVisible = ref(false);
 const {t} = useI18n();
 const toast = useToast();
+const confirm = useConfirm();
 
 async function submit() {
     await sessionApi.createSession(session.value).then(() => {
@@ -32,8 +33,9 @@ async function submit() {
 }
 
 async function load() {
-    try { sessions.value = await sessionApi.getSessionList(); }
-    catch (error) { console.error("Failed to fetch sessions:", error); }
+    sessions.value = await sessionApi.getSessionList().then().catch((err) => {
+        console.error("Failed to fetch sessions:", error);
+    });
 }
 
 const users = ref([])
@@ -68,6 +70,54 @@ function toggle(event, sessionId) {
     op.value.toggle(event)
 }
 
+const confirmDelete = (event, id) => {
+    confirm.require({
+            target: event.currentTarget,
+            message: t('session.deleteMessage'),
+            icon: 'pi pi-info-circle',
+            rejectProps: {
+                label: t('general.cancel'),
+                severity: 'secondary',
+                outlined: true
+            },
+            acceptProps: {
+                label: t('general.delete'),
+                severity: 'danger'
+            },
+            accept: async () => {
+                await sessionApi.deleteSession(id).then(_ => {
+                        toast.add({
+                            severity: 'info',
+                            summary: t('general.confirmed'),
+                            detail: t('session.deleteSuccess'),
+                            life: 3000
+                        });
+                        sessions.value = sessions.value.filter(session => session.id !== id)
+                    }
+                ).catch(
+                    () => {
+                        toast.add({
+                            severity: 'error',
+                            summary: t('general.error'),
+                            detail: t('session.deleteError'),
+                            life: 3000
+                        });
+                    }
+                )
+
+            },
+            reject: () => {
+                toast.add({
+                    severity: 'error',
+                    summary: t('general.rejected'),
+                    detail: t('session.deleteRejection'),
+                    life: 3000
+                });
+            }
+        }
+    )
+    ;
+}
 
 onMounted(async () => {
     await load()
@@ -87,7 +137,7 @@ watch(name, async (newVal) => {
     if (newVal && typeof newVal === 'object') {
         console.log('Character selected:', newVal)
         character.value = newVal;
-        await sessionApi.addCharacterToSession(selectedSessionId.value, newVal.id)
+        await sessionCharacterApi.addCharacterToSession(selectedSessionId.value, newVal.id)
         await load()
         op.value.hide()
     }
@@ -95,10 +145,11 @@ watch(name, async (newVal) => {
 </script>
 
 <template>
-
+    <Toast/>
+    <ConfirmPopup></ConfirmPopup>
     <div class="m-8">
         <div class="flex flex-col items-end mb-2">
-            <Button :label="t('session.createSession')" @click='createDialogVisible = true'/>
+            <Button :label="t('menu.titles.createSession')" @click='createDialogVisible = true'/>
         </div>
         <Toast/>
         <Dialog v-model:visible="createDialogVisible" modal :header="t('menu.titles.createSession')"
@@ -141,13 +192,26 @@ watch(name, async (newVal) => {
                                                 class="cursor-pointer hover:bg-gray-200 transition-shadow rounded-md px-2 py-1 shadow-sm"
                                                 @click="toggle($event, item.id)"/>
                                         </div>
-                                        <div class="flex flex-col md:items-end">
-                                            <Button label="Manage"
-                                                    class="flex-auto md:flex-initial whitespace-nowrap"></Button>
+                                        <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                                            <div
+                                                class="flex flex-col-reverse sm:flex-row sm:justify-end sm:items-center gap-2">
+                                                <!-- Delete -->
+                                                <Button
+                                                    :label="t('general.delete')"
+                                                    severity="danger"
+                                                    @click="confirmDelete($event, item.id)"
+                                                    class="w-full sm:w-auto whitespace-nowrap"
+                                                />
+                                                <!-- Manage -->
+                                                <Button
+                                                    :label="t('general.manage')"
+                                                    @click="router.push(`/sessions/${item.id}`)"
+                                                    class="w-full sm:w-auto whitespace-nowrap"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </template>

@@ -35,8 +35,6 @@ data class CharacterFindDTO(
     val id: Long,
     val name: String,
     val imageURI: String?,
-    val characterClass: ClassFindDTO,
-    val characterRace: RaceFindDTO,
 ) : BaseFindDTO()
 
 data class CharacterGetDTO(

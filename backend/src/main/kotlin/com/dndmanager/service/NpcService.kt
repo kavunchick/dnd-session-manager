@@ -9,6 +9,7 @@ import com.dndmanager.service.additional.ConverterService
 import io.quarkus.panache.common.Sort
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
+import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 
@@ -17,19 +18,17 @@ class NpcService : BaseService<NpcCreateDTO, NpcGetDTO, NpcFindDTO, NpcUpdateDTO
 
     override val converter = ConverterService()
 
-    override fun getById(id: Long, user: JsonWebToken): NpcGetDTO {
-        val npc = Npc.findById(id)?: throw NotFoundException()
-        return converter.toGetDTO(npc)
-    }
+    override fun getById(id: Long, user: JsonWebToken): NpcGetDTO =
+        Npc.findById(id)?.let { converter.toGetDTO(it) } ?: throw NotFoundException()
 
-    override fun getAll(user: JsonWebToken): List<NpcFindDTO> {
-        val npcList = Npc.listAll(Sort.by("name"))
-        return npcList.map { converter.toFindDTO(it) }
-    }
+    override fun getAll(user: JsonWebToken): List<NpcFindDTO> =
+        Npc.listAll(Sort.by("name")).map { converter.toFindDTO(it) }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
-        if (!Npc.deleteById(id)) throw NotFoundException()
+        val npc =  Npc.findById(id) ?: throw NotFoundException()
+        if (!npc.isTrusted(user.subject)) throw ForbiddenException()
+        npc.delete()
     }
 
     @Transactional
@@ -41,9 +40,9 @@ class NpcService : BaseService<NpcCreateDTO, NpcGetDTO, NpcFindDTO, NpcUpdateDTO
 
     @Transactional
     override fun update(id: Long, dto: NpcUpdateDTO, user: JsonWebToken): NpcGetDTO {
-        var npc = Npc.findById(id) ?: throw NotFoundException()
-        npc = converter.merge(npc, dto)
-        npc.persistAndFlush()
+        val npc = Npc.findById(id) ?: throw NotFoundException()
+        if (!npc.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(npc, dto)
         return converter.toGetDTO(npc)
     }
 }

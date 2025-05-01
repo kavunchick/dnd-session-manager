@@ -10,6 +10,7 @@ import com.dndmanager.dto.CharacterInventoryUpdateDTO
 import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
+import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 
@@ -24,11 +25,14 @@ class CharacterInventoryService :
         return converter.toGetDTO(ci)
     }
 
-    override fun getAll(user: JsonWebToken): List<CharacterInventoryFindDTO> = throw NotImplementedError()
+    override fun getAll(user: JsonWebToken): List<CharacterInventoryFindDTO> =
+        CharacterInventory.listAll().map { converter.toFindDTO(it) }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
-        if (!CharacterInventory.deleteById(id)) throw NotFoundException()
+        val entry = CharacterInventory.findById(id) ?: throw NotFoundException()
+        if (!entry.isTrusted(user.subject)) throw ForbiddenException()
+        entry.delete()
     }
 
     @Transactional
@@ -43,15 +47,16 @@ class CharacterInventoryService :
 
     @Transactional
     override fun update(id: Long, dto: CharacterInventoryUpdateDTO, user: JsonWebToken): CharacterInventoryGetDTO {
-        var entry = CharacterInventory.findById(id) ?: throw NotFoundException()
-        entry = converter.merge(entry, dto)
+        val entry = CharacterInventory.findById(id) ?: throw NotFoundException()
+        if (!entry.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(entry, dto)
         val res = converter.toGetDTO(entry)
         if (entry.amount == 0)
             entry.delete()
         return res
     }
 
-    fun getAllByCharacter(id: Long) : List<CharacterInventoryFindDTO> {
+    fun getAllByCharacter(id: Long): List<CharacterInventoryFindDTO> {
         return CharacterInventory.list("character", id).map { converter.toFindDTO(it) }
     }
 }

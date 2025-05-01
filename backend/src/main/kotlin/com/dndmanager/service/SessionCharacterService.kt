@@ -1,9 +1,6 @@
 package com.dndmanager.service
 
-import com.dndmanager.domain.Character
-import com.dndmanager.domain.Session
 import com.dndmanager.domain.SessionCharacter
-import com.dndmanager.domain.User
 import com.dndmanager.dto.SessionCharacterCreateDTO
 import com.dndmanager.dto.SessionCharacterFindDTO
 import com.dndmanager.dto.SessionCharacterGetDTO
@@ -30,15 +27,9 @@ class SessionCharacterService :
 
     @Transactional
     override fun update(id: Long, dto: SessionCharacterUpdateDTO, user: JsonWebToken): SessionCharacterGetDTO {
-        val userEntity = User.find(user.subject)
         val sessionCharacter = SessionCharacter.findById(id) ?: throw NotFoundException()
-        if (sessionCharacter.session.author != userEntity) throw ForbiddenException()
-        dto.sessionId?.let {
-            sessionCharacter.session = Session.findById(it) ?: throw NotFoundException()
-            if (sessionCharacter.session.author != userEntity) throw ForbiddenException()
-        }
-        dto.characterId?.let { sessionCharacter.character = Character.findById(it) ?: throw NotFoundException() }
-        sessionCharacter.persistAndFlush()
+        if (!sessionCharacter.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(sessionCharacter, dto)
         return converter.toGetDTO(sessionCharacter)
     }
 
@@ -47,14 +38,13 @@ class SessionCharacterService :
         if (!SessionCharacter.list("session.id = ?1 and character.id = ?2", dto.sessionId, dto.characterId)
                 .isEmpty()
         ) throw EntityExistsException()
-        println("in end point")
         return converter.toEntity(dto).apply { persistAndFlush() }.let(converter::toGetDTO)
     }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
         val sessionCharacter = SessionCharacter.findById(id) ?: throw NotFoundException()
-        if (sessionCharacter.session.author.sub != user.subject) throw ForbiddenException()
+        if (!sessionCharacter.isTrusted(user.subject)) throw ForbiddenException()
         sessionCharacter.delete()
     }
 }

@@ -19,6 +19,7 @@ open class Character(
 
     var flaws: String?,
 
+    @Column(columnDefinition = "TEXT")
     var imageURI: String?,
 
     @Column(name = "personality_traits")
@@ -45,6 +46,8 @@ open class Character(
     var createdBy: User
 
 ) : BaseEntity() {
+
+    override fun isTrusted(sub: String) = createdBy == User.findBySub(sub)
 
     companion object : PanacheCompanion<Character>
 

@@ -8,6 +8,7 @@ import com.dndmanager.dto.CharacterUpdateDTO
 import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
+import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 import java.util.Locale.getDefault
@@ -24,7 +25,11 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
         Character.listAll().map { converter.toFindDTO(it) }
 
     @Transactional
-    override fun delete(id: Long, user: JsonWebToken) = Character.findById(id)?.delete() ?: throw NotFoundException()
+    override fun delete(id: Long, user: JsonWebToken) {
+        val character = Character.findById(id) ?: throw NotFoundException()
+        if (!character.isTrusted(user.subject)) throw ForbiddenException()
+        character.delete()
+    }
 
     @Transactional
     override fun create(dto: CharacterCreateDTO, user: JsonWebToken): CharacterGetDTO {
@@ -39,9 +44,9 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
 
     @Transactional
     override fun update(id: Long, dto: CharacterUpdateDTO, user: JsonWebToken): CharacterGetDTO {
-        var character = Character.findById(id) ?: throw NotFoundException()
-        character = converter.merge(character, dto)
-        character.persistAndFlush()
+        val character = Character.findById(id) ?: throw NotFoundException()
+        if (!character.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(character, dto)
         return converter.toGetDTO(character)
     }
 

@@ -6,8 +6,10 @@ data class SessionCharacterCreateDTO(
 ) : BaseCreateDTO()
 
 data class SessionCharacterUpdateDTO(
-    val sessionId: Long?,
-    val characterId: Long?,
+    val level: Short?,
+    val experience: Short?,
+    val health: Short?,
+    val stats: MutableList<Int>?,
 ) : BaseUpdateDTO()
 
 data class SessionCharacterFindDTO(
@@ -19,5 +21,9 @@ data class SessionCharacterFindDTO(
 data class SessionCharacterGetDTO(
     val id: Long,
     val session: SessionFindDTO,
-    val character: CharacterFindDTO
+    val character: CharacterGetDTO,
+    val level: Short,
+    val experience: Short,
+    val health: Short,
+    val stats: List<Int>,
 ) : BaseGetDTO()

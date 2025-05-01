@@ -7,12 +7,17 @@ const i18n = createI18n({
         en: {
             general: {
                 save: "Save",
+                delete: "Delete",
                 cancel: "Cancel",
                 success: "Success!",
                 error: "Error",
                 next: "Next",
                 back: "Back",
                 submit: "Submit",
+                edit: "Edit",
+                manage: "Manage",
+                confirmed: "Confirmed",
+                rejected: "Rejected",
             },
             menu: {
                 titles: {
@@ -32,7 +37,11 @@ const i18n = createI18n({
                     success: "Session was created successfully!",
                     error: "Something went wrong during session creation :(",
                     addPlayer: "Add player",
-                }
+                },
+                deleteMessage: "Are you sure you want to delete this session?",
+                deleteSuccess: "Session was deleted successfully!",
+                deleteError: "Something went wrong during session deletion :(",
+                deleteRejection: "You have rejected the deletion of the session",
             },
             character: {
                 create: {
@@ -49,6 +58,11 @@ const i18n = createI18n({
                     characterName: "Character name",
                     selectAlignment: "Select alignment",
                     pointsLeft: "Points left: ",
+                },
+                card: {
+                    level: "Level: ",
+                    exp: "Experience: ",
+                    health: "Health: ",
                 },
                 alignment: {
                     lawfulGood: "Lawful Good",

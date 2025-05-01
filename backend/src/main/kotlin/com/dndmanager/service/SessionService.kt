@@ -8,6 +8,7 @@ import com.dndmanager.dto.SessionUpdateDTO
 import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
+import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 
@@ -29,6 +30,7 @@ class SessionService : BaseService<SessionCreatDTO, SessionGetDTO, SessionFindDT
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
         val session = Session.findById(id) ?: throw NotFoundException()
+        if (!session.isTrusted(user.subject)) throw ForbiddenException()
         session.delete()
     }
 
@@ -41,9 +43,9 @@ class SessionService : BaseService<SessionCreatDTO, SessionGetDTO, SessionFindDT
 
     @Transactional
     override fun update(id: Long, dto: SessionUpdateDTO, user: JsonWebToken): SessionGetDTO {
-        var session = Session.findById(id) ?: throw NotFoundException()
-        session = converter.merge(session, dto)
-        session.persistAndFlush()
+        val session = Session.findById(id) ?: throw NotFoundException()
+        if (!session.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(session, dto)
         return converter.toGetDTO(session)
     }
 }

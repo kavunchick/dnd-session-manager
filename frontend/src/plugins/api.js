@@ -8,14 +8,36 @@ export const sessionApi = {
         return response.data
     },
 
+    async getSession(id) {
+        const response = await axios.get(`/sessions/${id}`)
+        return response.data
+    },
+
     async createSession(body) {
         const response = await axios.put("/sessions", body)
         return response.data
     },
 
+    async deleteSession(id) {
+        const response = await axios.delete(`/sessions/${id}`)
+        return response.data
+    },
+}
+
+export const sessionCharacterApi = {
     async addCharacterToSession(session, character) {
         const response = await axios.put("/session/character",
             {sessionId: session, characterId: character})
+        return response.data
+    },
+
+    async updateCharacter(characterId, character) {
+        const response = await axios.patch(`/session/character/${characterId}`, character)
+        return response.data
+    },
+
+    async deleteCharacter(characterId) {
+        const response = await axios.delete(`/session/character/${characterId}`)
         return response.data
     }
 }

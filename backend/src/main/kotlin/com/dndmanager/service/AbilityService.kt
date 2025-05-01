@@ -8,6 +8,7 @@ import com.dndmanager.dto.AbilityUpdateDTO
 import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
+import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 
@@ -19,22 +20,22 @@ class AbilityService :
 
     @Transactional
     override fun create(dto: AbilityCreateDTO, user: JsonWebToken): AbilityGetDTO {
-        val ability = converter.toEntity(dto);
+        val ability = converter.toEntity(dto)
         ability.persistAndFlush()
         return converter.toGetDTO(ability)
     }
 
     @Transactional
     override fun update(id: Long, dto: AbilityUpdateDTO, user: JsonWebToken): AbilityGetDTO {
-        var ability = Ability.findById(id) ?: throw NotFoundException()
-        ability = converter.merge(ability, dto)
-        ability.persistAndFlush()
+        val ability = Ability.findById(id) ?: throw NotFoundException()
+        if (!ability.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(ability, dto)
         return converter.toGetDTO(ability)
     }
 
     override fun getById(id: Long, user: JsonWebToken): AbilityGetDTO {
         val ability = Ability.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(ability);
+        return converter.toGetDTO(ability)
     }
 
     override fun getAll(user: JsonWebToken): List<AbilityFindDTO> {
@@ -44,6 +45,8 @@ class AbilityService :
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
-        if (!Ability.deleteById(id)) throw NotFoundException()
+        val ability = Ability.findById(id) ?: throw NotFoundException()
+        if (!ability.isTrusted(user.subject)) throw ForbiddenException()
+        ability.delete()
     }
 }

@@ -14,13 +14,13 @@ class ConverterService {
     }
 
     fun toEntity(sessionCharacterDTO: SessionCharacterCreateDTO): SessionCharacter = sessionCharacterDTO.run {
-        println("toEntity")
         val character = Character.findById(characterId) ?: throw NotFoundException()
         SessionCharacter(
             Session.findById(sessionId) ?: throw NotFoundException(),
             character,
             emptyList(), mutableListOf(0, 0, 0, 0, 0), 1, 0,
-            character.characterClass.hitPointDie
+            character.characterClass.hitPointDie,
+            character.stats.toMutableList()
         )
     }
 
@@ -73,7 +73,7 @@ class ConverterService {
     }
 
     fun toGetDTO(sessionCharacter: SessionCharacter): SessionCharacterGetDTO = sessionCharacter.run {
-        SessionCharacterGetDTO(id ?: -1, toFindDTO(session), toFindDTO(character))
+        SessionCharacterGetDTO(id ?: -1, toFindDTO(session), toGetDTO(character), level, experience, health, stats)
     }
 
     fun toGetDTO(user: User) = user.run {
@@ -81,7 +81,7 @@ class ConverterService {
     }
 
     fun toGetDTO(session: Session): SessionGetDTO = session.run {
-        SessionGetDTO(id ?: 0, name, start, lastUpdated, characters.map { toFindDTO(it.character) })
+        SessionGetDTO(id ?: 0, name, start, lastUpdated, characters.map { toGetDTO(it) })
     }
 
     fun toGetDTO(character: Character): CharacterGetDTO = character.run {
@@ -124,7 +124,7 @@ class ConverterService {
         session.run { SessionFindDTO(id ?: 0, name, characters.map { toFindDTO(it.character) }, toFindDTO(author)) }
 
     fun toFindDTO(character: Character): CharacterFindDTO =
-        character.run { CharacterFindDTO(id ?: 0, name, imageURI, toFindDTO(characterClass), toFindDTO(race)) }
+        character.run { CharacterFindDTO(id ?: 0, name, imageURI) }
 
     fun toFindDTO(abilityBonus: RaceAbilityBonus): RaceAbilityBonusFindDTO =
         abilityBonus.run { RaceAbilityBonusFindDTO(id ?: 0, race.id ?: 0, ability.id ?: 0) }
@@ -154,53 +154,71 @@ class ConverterService {
     fun toFindDTO(user: User): UserFindDTO = user.run { UserFindDTO(username, sub) }
 
     // merge
-    fun merge(ability: Ability, abilityDTO: AbilityUpdateDTO): Ability = ability.run {
-        Ability(abilityDTO.name ?: name, abilityDTO.description ?: description)
+    fun merge(ability: Ability, abilityDTO: AbilityUpdateDTO) {
+        ability.apply {
+            name = abilityDTO.name ?: name
+            description = abilityDTO.description ?: description
+        }
     }
 
-    fun merge(character: Character, characterDto: CharacterUpdateDTO): Character = character.run {
-        Character(
-            characterDto.name ?: name,
-            characterDto.background ?: background,
-            characterDto.ideals ?: ideals,
-            characterDto.bonds ?: bonds,
-            characterDto.flaws ?: flaws,
-            characterDto.imageURI ?: imageURI,
-            characterDto.personalityTraits ?: personalityTraits,
-            characterDto.alignment ?: alignment,
-            characterDto.classId?.let { Class.findById(it) ?: throw NotFoundException() } ?: character.characterClass,
-            characterDto.raceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: character.race,
+    fun merge(sessionCharacter: SessionCharacter, sessionCharacterDto: SessionCharacterUpdateDTO) {
+        sessionCharacter.apply {
+            level = sessionCharacterDto.level ?: level
+            experience = sessionCharacterDto.experience ?: experience
+            health = sessionCharacterDto.health ?: health
+            stats = sessionCharacterDto.stats ?: stats
+        }
+    }
+
+    fun merge(character: Character, characterDto: CharacterUpdateDTO) {
+        character.apply {
+            name = characterDto.name ?: name
+            background = characterDto.background ?: background
+            ideals = characterDto.ideals ?: ideals
+            bonds = characterDto.bonds ?: bonds
+            flaws = characterDto.flaws ?: flaws
+            imageURI = characterDto.imageURI ?: imageURI
+            personalityTraits = characterDto.personalityTraits ?: personalityTraits
+            alignment = characterDto.alignment ?: alignment
+            characterClass = characterDto.classId?.let { Class.findById(it) ?: throw NotFoundException() }
+                ?: character.characterClass
+            race = characterDto.raceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: character.race
 //            characterDto.raceAbilityId?.let { RaceAbilityBonus.findById(it) ?: throw NotFoundException() }
 //                ?: character.abilityBonus,
-            stats, createdBy
-        )
+        }
     }
 
-    fun merge(session: Session, sessionDto: SessionUpdateDTO): Session = session.run {
-        Session(sessionDto.name, session.start, Instant.now(), characters, User("asd", "asd", emptyList(), emptyList()))
+    fun merge(session: Session, sessionDto: SessionUpdateDTO) {
+        session.apply {
+            name = sessionDto.name
+            lastUpdated = Instant.now()
+        }
     }
 
-    fun merge(equipment: Equipment, equipmentDto: EquipmentUpdateDTO): Equipment = equipment.run {
-        Equipment(
-            equipmentDto.name ?: name,
-            equipmentDto.description ?: description,
-            equipmentDto.suggestedPriceGp ?: suggestedPriceGp,
-            equipmentDto.weight ?: weight
-        )
+    fun merge(equipment: Equipment, equipmentDto: EquipmentUpdateDTO) {
+        equipment.apply {
+            name = equipmentDto.name ?: name
+            description = equipmentDto.description ?: description
+            suggestedPriceGp = equipmentDto.suggestedPriceGp ?: suggestedPriceGp
+            weight = equipmentDto.weight ?: weight
+        }
     }
 
-    fun merge(ci: CharacterInventory, ciDto: CharacterInventoryUpdateDTO): CharacterInventory = ci.run {
-        CharacterInventory(ciDto.amount, character, equipment)
+    fun merge(ci: CharacterInventory, ciDto: CharacterInventoryUpdateDTO) {
+        ci.apply { amount = ciDto.amount }
     }
 
-    fun merge(npc: Npc, npcDto: NpcUpdateDTO): Npc = npc.run {
-        Npc(
-            npcDto.name ?: name, npcDto.description ?: description, npcDto.health ?: health,
-            npcDto.alignment ?: alignment,
-            npcDto.npcClassId?.let { Class.findById(it) ?: throw NotFoundException() } ?: classField,
-            npcDto.npcRaceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: race,
-            npcDto.isHostile ?: isHostile, npcDto.role ?: role,
-            npcDto.locationId?.let { Location.findById(it) ?: throw NotFoundException() } ?: location
-        )
+    fun merge(npc: Npc, npcDto: NpcUpdateDTO) {
+        npc.apply {
+            name = npcDto.name ?: name
+            description = npcDto.description ?: description
+            health = npcDto.health ?: health
+            alignment = npcDto.alignment ?: alignment
+            classField = npcDto.npcClassId?.let { Class.findById(it) ?: throw NotFoundException() } ?: classField
+            race = npcDto.npcRaceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: race
+            isHostile = npcDto.isHostile ?: isHostile
+            role = npcDto.role ?: role
+            location = npcDto.locationId?.let { Location.findById(it) ?: throw NotFoundException() } ?: location
+        }
     }
 }

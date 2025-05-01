@@ -19,8 +19,8 @@ open class User(
     var sessions: List<Session>
 
 ) : BaseEntity() {
-
-    fun findBySub(sub: String): User? = find("sub = ?1", sub).firstResult()
-
-    companion object : PanacheCompanion<User>
+    
+    companion object : PanacheCompanion<User> {
+        fun findBySub(sub: String): User? = find("sub = ?1", sub).firstResult()
+    }
 }

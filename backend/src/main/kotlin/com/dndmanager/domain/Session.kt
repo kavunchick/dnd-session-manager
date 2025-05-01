@@ -17,12 +17,14 @@ open class Session(
     @Column(name = "last_updated")
     var lastUpdated: Instant?,
 
-    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     var characters: MutableList<SessionCharacter> = mutableListOf(),
 
     @ManyToOne
     var author: User
 ) : BaseEntity() {
+
+    override fun isTrusted(sub: String) = author == User.findBySub(sub)
 
     companion object : PanacheCompanion<Session>
 

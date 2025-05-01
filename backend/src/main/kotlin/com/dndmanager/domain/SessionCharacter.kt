@@ -31,7 +31,12 @@ open class SessionCharacter (
 
     @Column(nullable = false)
     var health: Short,
+
+    var stats: MutableList<Int>,
+
 ) : BaseEntity()  {
+
+    override fun isTrusted(sub: String) = session.author == User.findBySub(sub)
 
     companion object : PanacheCompanion<SessionCharacter>
 
