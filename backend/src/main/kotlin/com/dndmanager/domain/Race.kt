@@ -6,7 +6,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "races")
-open class Race (
+open class Race(
 
     @Column(nullable = false)
     var name: String,
@@ -20,6 +20,9 @@ open class Race (
 
     @Column(nullable = false)
     var speed: Short,
+
+    @Column(columnDefinition = "TEXT")
+    var image: String?,
 ) : BaseEntity() {
 
     companion object : PanacheCompanion<Race>

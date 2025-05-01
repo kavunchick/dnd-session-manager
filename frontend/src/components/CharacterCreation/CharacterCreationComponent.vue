@@ -26,7 +26,6 @@ const character = reactive({
     raceId: null,
     traits: null,
     stats: null
-    // abilities: null,
 });
 
 function createCharacter() {

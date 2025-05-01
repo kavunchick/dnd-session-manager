@@ -58,7 +58,7 @@ const i18n = createI18n({
                     bonds: "Bonds",
                     ideals: "Ideals",
                     traits: "Traits",
-                    uploadImage: "Upload image",
+                    uploadImage: "Upload image ",
                     abilities: "Abilities",
                     chooseRace: "Choose a Class",
                     characterName: "Character name",

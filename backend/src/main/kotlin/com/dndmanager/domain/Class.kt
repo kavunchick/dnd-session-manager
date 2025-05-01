@@ -14,6 +14,7 @@ open class Class(
     @Column(nullable = false)
     var name: String,
 
+    @Column(columnDefinition = "TEXT")
     var image: String?,
 
     @Column(columnDefinition = "TEXT")

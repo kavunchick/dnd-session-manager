@@ -1,6 +1,6 @@
 <script setup>
 
-import SessionComponent from "@/components/SessionComponent.vue";
+import SessionComponent from "@/components/SessionManaging/SessionComponent.vue";
 </script>
 
 <template>

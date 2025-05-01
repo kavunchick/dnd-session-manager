@@ -32,11 +32,7 @@ async function submit() {
     createDialogVisible.value = false
 }
 
-async function load() {
-    sessions.value = await sessionApi.getSessionList().then().catch((err) => {
-        console.error("Failed to fetch sessions:", error);
-    });
-}
+const load = async () => sessions.value = await sessionApi.getSessionList()
 
 const users = ref([])
 const user = ref()
@@ -49,21 +45,9 @@ const name = ref()
 const character = ref()
 const selectedSessionId = ref()
 
-async function findUserByUsername() {
-    try {
-        users.value = await userApi.findByUsername(username.value)
-    } catch (error) {
-        console.error("Failed to fetch user:", error);
-    }
-}
+const findUserByUsername = async () => users.value = await userApi.findByUsername(username.value)
 
-async function findCharacterByNameAndAuthor() {
-    try {
-        characters.value = await characterApi.getByNameAndAuthor(name.value, user.value.sub)
-    } catch (error) {
-        console.error("Failed to fetch character:", error);
-    }
-}
+const findCharacterByNameAndAuthor = async () => characters.value = await characterApi.getByNameAndAuthor(name.value, user.value.sub)
 
 function toggle(event, sessionId) {
     selectedSessionId.value = sessionId
@@ -119,9 +103,7 @@ const confirmDelete = (event, id) => {
     ;
 }
 
-onMounted(async () => {
-    await load()
-});
+onMounted(async () => await load() );
 
 watch(username, (newVal) => {
     if (newVal && typeof newVal === 'object') {
@@ -172,7 +154,6 @@ watch(name, async (newVal) => {
                     <template #list="slotProps">
                         <div class="flex flex-col">
                             <div v-for="(item, index) in slotProps.items" :key="index">
-
                                 <div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4"
                                      :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                                     <div class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-6">
@@ -195,14 +176,12 @@ watch(name, async (newVal) => {
                                         <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
                                             <div
                                                 class="flex flex-col-reverse sm:flex-row sm:justify-end sm:items-center gap-2">
-                                                <!-- Delete -->
                                                 <Button
                                                     :label="t('general.delete')"
                                                     severity="danger"
                                                     @click="confirmDelete($event, item.id)"
                                                     class="w-full sm:w-auto whitespace-nowrap"
                                                 />
-                                                <!-- Manage -->
                                                 <Button
                                                     :label="t('general.manage')"
                                                     @click="router.push(`/sessions/${item.id}`)"

@@ -77,7 +77,7 @@ watch(() => props.stats, s => {
         <template #header>
             <div class="w-full aspect-[4/3] overflow-hidden">
                 <img :src="character.imageURI" alt="Avatar"
-                     class="w-full h-full object-cover object-center"/>
+                     class="w-full h-full object-cover object-top"/>
             </div>
         </template>
 
