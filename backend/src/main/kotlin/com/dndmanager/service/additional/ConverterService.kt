@@ -193,7 +193,7 @@ class ConverterService {
             bonds = characterDto.bonds ?: bonds
             flaws = characterDto.flaws ?: flaws
             imageURI = characterDto.imageURI ?: imageURI
-            personalityTraits = characterDto.personalityTraits ?: personalityTraits
+            personalityTraits = characterDto.traits ?: personalityTraits
             alignment = characterDto.alignment ?: alignment
             characterClass = characterDto.classId?.let { Class.findById(it) ?: throw NotFoundException() }
                 ?: character.characterClass

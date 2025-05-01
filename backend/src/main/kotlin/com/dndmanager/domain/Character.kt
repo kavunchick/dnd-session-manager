@@ -11,18 +11,22 @@ open class Character(
     @Column(nullable = false)
     var name: String,
 
+    @Column(columnDefinition = "TEXT")
     var background: String?,
 
+    @Column(columnDefinition = "TEXT")
     var ideals: String?,
 
+    @Column(columnDefinition = "TEXT")
     var bonds: String?,
 
+    @Column(columnDefinition = "TEXT")
     var flaws: String?,
 
     @Column(columnDefinition = "TEXT")
     var imageURI: String?,
 
-    @Column(name = "personality_traits")
+    @Column(columnDefinition = "TEXT", name = "personality_traits")
     var personalityTraits: String?,
 
     var alignment: Alignment,

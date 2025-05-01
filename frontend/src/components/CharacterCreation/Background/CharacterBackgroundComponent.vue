@@ -101,6 +101,7 @@ onMounted(() => {
                 <ImageUploadComponent @upload="(imageUrl) => character.image = imageUrl"/>
             </div>
         </div>
-        <Button type="submit" severity="secondary" :label="t('general.submit')" class="self-end"/>
+        <Button type="submit" severity="secondary" :label="t('general.submit')" class="self-end"
+                @click="emit('submit', character)"/>
     </Form>
 </template>

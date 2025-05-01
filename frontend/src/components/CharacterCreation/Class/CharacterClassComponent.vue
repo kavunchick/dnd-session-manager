@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {classApi} from "@/plugins/api.js";
 import CharacterClassCard from "@/components/CharacterCreation/Class/CharacterClassCard.vue";
 

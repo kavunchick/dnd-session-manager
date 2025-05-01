@@ -1,5 +1,5 @@
 <script setup>
-import {defineEmits, ref} from 'vue'
+import {ref} from 'vue'
 import InputText from 'primevue/inputtext'
 import i18n from "@/plugins/translations.js";
 import {useI18n} from "vue-i18n";

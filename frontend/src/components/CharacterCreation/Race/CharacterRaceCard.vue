@@ -2,7 +2,6 @@
 import ScrollPanel from "primevue/scrollpanel";
 import Card from "primevue/card";
 import {Button} from "primevue";
-import {defineEmits} from "vue";
 
 const props = defineProps(['race']);
 const emit = defineEmits(['select']);

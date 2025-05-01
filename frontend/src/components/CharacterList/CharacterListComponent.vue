@@ -1,16 +1,14 @@
 <script setup>
 import PlayerCardComponent from "@/components/PlayerCardComponent.vue";
-import {onMounted, ref, watch} from "vue";
-import {characterApi, sessionCharacterApi} from "@/plugins/api.js";
-import {Button, Toast, useToast} from "primevue";
+import {onActivated, onMounted, ref} from "vue";
+import {characterApi} from "@/plugins/api.js";
+import {Toast, useToast} from "primevue";
 import {useI18n} from "vue-i18n";
 import router from "@/plugins/router.js";
-import {useRoute} from "vue-router";
 
 const characters = ref();
 const toast = useToast()
 const {t} = useI18n()
-const route = useRoute()
 
 async function deletePlayer(characterId) {
     await characterApi.deleteCharacter(characterId).then((_) => {
@@ -58,13 +56,10 @@ async function updatePlayer(characterId, payload) {
     })
 }
 
-onMounted(async () => {
-    characters.value = await characterApi.getCharacterList()
-})
+const loadCharacters = async () => characters.value = await characterApi.getCharacterList()
 
-watch(() => route.params.id, async () => {
-    characters.value = await characterApi.getCharacterList()
-})
+onMounted(loadCharacters)
+onActivated(loadCharacters)
 </script>
 
 <template>

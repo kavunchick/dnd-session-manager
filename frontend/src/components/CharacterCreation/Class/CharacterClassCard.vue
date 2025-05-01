@@ -1,5 +1,4 @@
 <script setup>
-import {defineProps, defineEmits} from "vue";
 import ScrollPanel from "primevue/scrollpanel";
 import Card from "primevue/card";
 import Button from "primevue/button";
