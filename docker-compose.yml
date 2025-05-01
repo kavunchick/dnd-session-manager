@@ -1,6 +1,7 @@
 services:
+
   db:
-    image: postgres
+    image: postgres:13
     restart: always
     environment:
       POSTGRES_USER: root
@@ -8,3 +9,52 @@ services:
       POSTGRES_DB: dnd
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d dnd"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - dnd-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: src/main/docker/Dockerfile.jvm
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - dnd-net
+    entrypoint: >
+      sh -c "
+        until (echo > /dev/tcp/db/5432) >/dev/null 2>&1; do
+          echo '⏳ waiting for postgres…';
+          sleep 2;
+        done
+        echo '✅ postgres is up – launching backend…';
+        /opt/jboss/container/java/run/run-java.sh
+      "
+    environment:
+      - DB_HOST=db
+      - DB_NAME=dnd
+      - DB_USER=root
+      - DB_PASS=root
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://db:5432/dnd
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - dnd-net
+
+networks:
+  dnd-net:
+    driver: bridge
+
