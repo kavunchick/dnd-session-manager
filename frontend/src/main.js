@@ -10,6 +10,7 @@ import i18n from "@/plugins/translations.js";
 import {createPinia} from "pinia";
 import { initializeApp } from "firebase/app";
 import {ToastService} from "primevue";
+import ConfirmationService from 'primevue/confirmationservice';
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_API_KEY,
@@ -39,4 +40,5 @@ createApp(App).use(PrimeVue, {
     .use(i18n)
     .use(pinia)
     .use(ToastService)
+    .use(ConfirmationService)
     .mount('#app')
