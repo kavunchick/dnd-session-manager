@@ -12,7 +12,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken
 
 @Path("/login")
 @Authenticated
-class User {
+class Auth {
 
     @Inject
     lateinit var service: UserService

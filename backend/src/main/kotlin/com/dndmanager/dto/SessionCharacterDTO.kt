@@ -1,11 +1,29 @@
 package com.dndmanager.dto
 
-//import com.dndmanager.domain.Session
-//
-//data class SessionCharacterCreateDTO () : BaseCreateDTO()
-//
-//data class SessionCharacterUpdateDTO () : BaseUpdateDTO()
-//
-//data class SessionCharacterFindDTO () : BaseFindDTO()
-//
-//data class SessionCharacterGetDTO (val id: Long, val session: String, val character: CharacterFindDTO) : BaseGetDTO()
+data class SessionCharacterCreateDTO(
+    val sessionId: Long,
+    val characterId: Long,
+) : BaseCreateDTO()
+
+data class SessionCharacterUpdateDTO(
+    val level: Short?,
+    val experience: Short?,
+    val health: Short?,
+    val stats: MutableList<Int>?,
+) : BaseUpdateDTO()
+
+data class SessionCharacterFindDTO(
+    val id: Long,
+    val session: SessionFindDTO,
+    val character: CharacterFindDTO
+) : BaseFindDTO()
+
+data class SessionCharacterGetDTO(
+    val id: Long,
+    val session: SessionFindDTO,
+    val character: CharacterGetDTO,
+    val level: Short,
+    val experience: Short,
+    val health: Short,
+    val stats: List<Int>,
+) : BaseGetDTO()

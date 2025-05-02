@@ -28,7 +28,7 @@ onMounted(() => {
 
 <template>
     <div class="flex flex-col justify-center items-center min-h-screen">
-        <Image src="/src/assets/dnd_logo.png" alt="Image" width="250"/>
+        <Image src="/dnd_logo.png" alt="Image" width="250"/>
         <h1 class="font-extrabold text-5xl m-8 text-center"> Sign in to <br>D&D Session Manager </h1>
         <Button outlined rounded class="min-w-2xl" @click="login">
             Sign in with Google

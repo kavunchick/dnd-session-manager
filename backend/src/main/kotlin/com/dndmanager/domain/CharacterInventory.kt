@@ -12,7 +12,7 @@ open class CharacterInventory(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    var character: SessionsCharacter,
+    var character: SessionCharacter,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)

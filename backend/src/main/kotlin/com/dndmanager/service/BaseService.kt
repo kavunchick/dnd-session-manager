@@ -8,21 +8,21 @@ import com.dndmanager.service.additional.ConverterService
 import jakarta.transaction.Transactional
 import org.eclipse.microprofile.jwt.JsonWebToken
 
-interface BaseService< C: BaseCreateDTO, G: BaseGetDTO, F: BaseFindDTO, U: BaseUpdateDTO> {
+interface BaseService<in C : BaseCreateDTO, out G : BaseGetDTO, out F : BaseFindDTO, in U : BaseUpdateDTO> {
 
     val converter: ConverterService
 
     @Transactional
-    fun getById(id: Long, user: JsonWebToken) : G
+    fun getById(id: Long, user: JsonWebToken): G
 
     @Transactional
-    fun getAll(user: JsonWebToken) : List<F>
+    fun getAll(user: JsonWebToken): List<F>
 
     @Transactional
-    fun update(id: Long, dto: U, user: JsonWebToken) : G
+    fun update(id: Long, dto: U, user: JsonWebToken): G
 
     @Transactional
-    fun create(dto: C, user: JsonWebToken) : G
+    fun create(dto: C, user: JsonWebToken): G
 
     @Transactional
     fun delete(id: Long, user: JsonWebToken)

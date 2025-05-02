@@ -10,7 +10,13 @@ defineProps(['imagePath', 'title', 'text', 'routerLink']);
     <Button variant="text" @click="router.push(routerLink)">
         <Card class="w-120 h-130 p-4 shadow-md bg-white rounded-lg">
             <template #header>
-                <img class="object-cover rounded-md" alt="user header" :src="imagePath"/>
+                <div class="relative w-full aspect-[4/3]">
+                    <img
+                        class="object-cover object-top rounded-md w-full h-full"
+                        alt="user header"
+                        :src="imagePath"
+                    />
+                </div>
             </template>
             <template #title>
                 <h3 class="text-md font-semibold text-center">{{ title }}</h3>

@@ -5,27 +5,19 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "session_character")
-open class SessionsCharacter (
+open class SessionCharacter (
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "session_id", nullable = false)
     var session: Session,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "character_id", nullable = false)
     var character: Character,
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Character::class)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = CharacterInventory::class)
     @JoinColumn(name = "inventory_id", nullable = false)
     var inventory: List<CharacterInventory>,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "money_id", nullable = false)
-    var money: Money,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "abilities_id", nullable = false)
-    var abilities: CharacterAbility,
+    var money: MutableList<Int>,
 
     @Column(nullable = false)
     var level: Short,
@@ -35,8 +27,13 @@ open class SessionsCharacter (
 
     @Column(nullable = false)
     var health: Short,
+
+    var stats: MutableList<Int>,
+
 ) : BaseEntity()  {
 
-    companion object : PanacheCompanion<SessionsCharacter>
+    override fun isTrusted(sub: String) = session.author == User.findBySub(sub)
+
+    companion object : PanacheCompanion<SessionCharacter>
 
 }

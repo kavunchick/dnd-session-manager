@@ -5,6 +5,8 @@ import SessionView from "@/views/SessionView.vue";
 
 import axios from "axios";
 import CharacterCreationView from "@/views/CharacterCreationView.vue";
+import ManageSessionComponent from "@/components/SessionManaging/ManageSessionComponent.vue";
+import CharacterListView from "@/views/CharacterListView.vue";
 
 
 const routes = [
@@ -26,7 +28,16 @@ const routes = [
     },
     {
         path: '/character',
-        component: CharacterCreationView
+        component: CharacterListView
+    },
+    {
+      path: '/character/create',
+      component: CharacterCreationView
+    },
+    {
+        path: '/sessions/:sessionId',
+        component: ManageSessionComponent,
+        props: true,
     }
 ]
 

@@ -9,7 +9,7 @@ import jakarta.inject.Inject
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 
-@Path("/session/character")
+@Path("/session/character/items")
 class CharacterInventoryController : BaseControllerImp<CharacterInventoryService, CharacterInventoryCreateDTO, CharacterInventoryUpdateDTO, CharacterInventoryGetDTO, CharacterInventoryFindDTO>() {
 
     @Inject override lateinit var service: CharacterInventoryService

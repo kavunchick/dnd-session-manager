@@ -5,11 +5,23 @@ import com.dndmanager.dto.*
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 import java.time.Instant
+import kotlin.collections.mutableListOf
 
 class ConverterService {
     // toEntity
     fun toEntity(abilityDTO: AbilityCreateDTO): Ability = abilityDTO.run {
         Ability(name, description)
+    }
+
+    fun toEntity(sessionCharacterDTO: SessionCharacterCreateDTO): SessionCharacter = sessionCharacterDTO.run {
+        val character = Character.findById(characterId) ?: throw NotFoundException()
+        SessionCharacter(
+            Session.findById(sessionId) ?: throw NotFoundException(),
+            character,
+            emptyList(), mutableListOf(0, 0, 0, 0, 0), 1, 0,
+            character.characterClass.hitPointDie,
+            character.stats.toMutableList()
+        )
     }
 
     fun toEntity(userDto: UserCreateDTO): User = userDto.run {
@@ -18,10 +30,9 @@ class ConverterService {
 
     fun toEntity(user: User, characterDto: CharacterCreateDTO): Character = characterDto.run {
         Character(
-            name, background, ideals, bonds, flaws, null, personalityTraits, alignment,
+            name, background, ideals, bonds, flaws, image, traits, alignment,
             Class.findById(classId) ?: throw NotFoundException(),
-            Race.findById(raceId) ?: throw NotFoundException(),
-            RaceAbilityBonus.findById(raceAbilityId) ?: throw NotFoundException(), user
+            Race.findById(raceId) ?: throw NotFoundException(), stats, user
         )
     }
 
@@ -30,7 +41,7 @@ class ConverterService {
             name,
             Instant.now(),
             null,
-            emptyList(),
+            mutableListOf(),
             User.find("sub", user.subject).firstResult() ?: throw NotFoundException()
         )
     }
@@ -42,7 +53,7 @@ class ConverterService {
     fun toEntity(ciCreateDTO: CharacterInventoryCreateDTO): CharacterInventory = ciCreateDTO.run {
         CharacterInventory(
             amount,
-            SessionsCharacter.findById(character) ?: throw NotFoundException(),
+            SessionCharacter.findById(character) ?: throw NotFoundException(),
             Equipment.findById(equipment) ?: throw NotFoundException()
         )
     }
@@ -60,18 +71,22 @@ class ConverterService {
         AbilityGetDTO(id ?: -1, name, description)
     }
 
+    fun toGetDTO(sessionCharacter: SessionCharacter): SessionCharacterGetDTO = sessionCharacter.run {
+        SessionCharacterGetDTO(id ?: -1, toFindDTO(session), toGetDTO(character), level, experience, health, stats)
+    }
+
     fun toGetDTO(user: User) = user.run {
         UserGetDTO(username, sub, characters.map { toFindDTO(it) }, sessions.map { toFindDTO(it) })
     }
 
     fun toGetDTO(session: Session): SessionGetDTO = session.run {
-        SessionGetDTO(id ?: 0, name, start, lastUpdated, characters.map { toFindDTO(it.character) })
+        SessionGetDTO(id ?: 0, name, start, lastUpdated, characters.map { toGetDTO(it) })
     }
 
     fun toGetDTO(character: Character): CharacterGetDTO = character.run {
         CharacterGetDTO(
             id ?: 0, name, background, ideals, bonds, flaws, imageURI, personalityTraits, alignment,
-            toFindDTO(characterClass), toFindDTO(race), toFindDTO(abilityBonus)
+            toFindDTO(characterClass), stats, toFindDTO(race),
         )
     }
 
@@ -79,11 +94,15 @@ class ConverterService {
         EquipmentGetDTO(id ?: 0, name, description ?: "", suggestedPriceGp, weight)
     }
 
+    fun toGetDTO(classEntity: Class): ClassGetDTO = classEntity.run {
+        ClassGetDTO(id ?: 0, name, image, description ?: "", hitPointDie)
+    }
+
     fun toGetDTO(ci: CharacterInventory): CharacterInventoryGetDTO = ci.run {
         CharacterInventoryGetDTO(id ?: 0, amount, toFindDTO(equipment))
     }
 
-    fun toGetDTO(race: Race): RaceGetDTO = race.run { RaceGetDTO(id ?: 0, name) }
+    fun toGetDTO(race: Race): RaceGetDTO = race.run { RaceGetDTO(id ?: 0, name, description, image) }
 
     fun toGetDTO(npc: Npc): NpcGetDTO = npc.run {
         NpcGetDTO(
@@ -96,20 +115,38 @@ class ConverterService {
     fun toFindDTO(ability: Ability): AbilityFindDTO =
         ability.run { AbilityFindDTO(id ?: 0, name) }
 
+    fun toFindDTO(sessionCharacter: SessionCharacter): SessionCharacterFindDTO =
+        sessionCharacter.run { SessionCharacterFindDTO(id ?: -1, toFindDTO(session), toFindDTO(character)) }
+
     fun toFindDTO(session: Session): SessionFindDTO =
-        session.run { SessionFindDTO(id ?: 0, name, characters.map { toFindDTO(it.character) }) }
+        session.run { SessionFindDTO(id ?: 0, name, characters.map { toFindDTO(it.character) }, toFindDTO(author)) }
 
     fun toFindDTO(character: Character): CharacterFindDTO =
-        character.run { CharacterFindDTO(id ?: 0, name, imageURI, toFindDTO(characterClass), toFindDTO(race)) }
+        character.run {
+            CharacterFindDTO(
+                id ?: 0,
+                name,
+                background,
+                ideals,
+                bonds,
+                flaws,
+                imageURI,
+                personalityTraits,
+                alignment,
+                toFindDTO(characterClass),
+                toFindDTO(race),
+                stats
+            )
+        }
 
     fun toFindDTO(abilityBonus: RaceAbilityBonus): RaceAbilityBonusFindDTO =
         abilityBonus.run { RaceAbilityBonusFindDTO(id ?: 0, race.id ?: 0, ability.id ?: 0) }
 
     fun toFindDTO(race: Race): RaceFindDTO =
-        race.run { RaceFindDTO(id ?: 0, name) }
+        race.run { RaceFindDTO(id ?: 0, name, description, image) }
 
     fun toFindDTO(classEntity: Class): ClassFindDTO =
-        classEntity.run { ClassFindDTO(id ?: 0, name) }
+        classEntity.run { ClassFindDTO(id ?: 0, name, description, image) }
 
     fun toFindDTO(equipment: Equipment): EquipmentFindDTO =
         equipment.run { EquipmentFindDTO(id ?: 0, name, weight) }
@@ -127,53 +164,73 @@ class ConverterService {
                 toFindDTO(race), isHostile, role, location?.let { toFindDTO(it) })
         }
 
+    fun toFindDTO(user: User): UserFindDTO = user.run { UserFindDTO(username, sub) }
+
     // merge
-    fun merge(ability: Ability, abilityDTO: AbilityUpdateDTO): Ability = ability.run {
-        Ability(abilityDTO.name ?: name, abilityDTO.description ?: description)
+    fun merge(ability: Ability, abilityDTO: AbilityUpdateDTO) {
+        ability.apply {
+            name = abilityDTO.name ?: name
+            description = abilityDTO.description ?: description
+        }
     }
 
-    fun merge(character: Character, characterDto: CharacterUpdateDTO): Character = character.run {
-        Character(
-            characterDto.name ?: name,
-            characterDto.background ?: background,
-            characterDto.ideals ?: ideals,
-            characterDto.bonds ?: bonds,
-            characterDto.flaws ?: flaws,
-            characterDto.imageURI ?: imageURI,
-            characterDto.personalityTraits ?: personalityTraits,
-            characterDto.alignment ?: alignment,
-            characterDto.classId?.let { Class.findById(it) ?: throw NotFoundException() } ?: character.characterClass,
-            characterDto.raceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: character.race,
-            characterDto.raceAbilityId?.let { RaceAbilityBonus.findById(it) ?: throw NotFoundException() }
-                ?: character.abilityBonus, createdBy
-        )
+    fun merge(sessionCharacter: SessionCharacter, sessionCharacterDto: SessionCharacterUpdateDTO) {
+        sessionCharacter.apply {
+            level = sessionCharacterDto.level ?: level
+            experience = sessionCharacterDto.experience ?: experience
+            health = sessionCharacterDto.health ?: health
+            stats = sessionCharacterDto.stats ?: stats
+        }
     }
 
-    fun merge(session: Session, sessionDto: SessionUpdateDTO): Session = session.run {
-        Session(sessionDto.name, session.start, Instant.now(), characters, User("asd", "asd", emptyList(), emptyList()))
+    fun merge(character: Character, characterDto: CharacterUpdateDTO) {
+        character.apply {
+            name = characterDto.name ?: name
+            background = characterDto.background ?: background
+            ideals = characterDto.ideals ?: ideals
+            bonds = characterDto.bonds ?: bonds
+            flaws = characterDto.flaws ?: flaws
+            imageURI = characterDto.imageURI ?: imageURI
+            personalityTraits = characterDto.traits ?: personalityTraits
+            alignment = characterDto.alignment ?: alignment
+            characterClass = characterDto.classId?.let { Class.findById(it) ?: throw NotFoundException() }
+                ?: character.characterClass
+            race = characterDto.raceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: character.race
+            stats = characterDto.stats ?: stats
+        }
     }
 
-    fun merge(equipment: Equipment, equipmentDto: EquipmentUpdateDTO): Equipment = equipment.run {
-        Equipment(
-            equipmentDto.name ?: name,
-            equipmentDto.description ?: description,
-            equipmentDto.suggestedPriceGp ?: suggestedPriceGp,
-            equipmentDto.weight ?: weight
-        )
+    fun merge(session: Session, sessionDto: SessionUpdateDTO) {
+        session.apply {
+            name = sessionDto.name
+            lastUpdated = Instant.now()
+        }
     }
 
-    fun merge(ci: CharacterInventory, ciDto: CharacterInventoryUpdateDTO): CharacterInventory = ci.run {
-        CharacterInventory(ciDto.amount, character, equipment)
+    fun merge(equipment: Equipment, equipmentDto: EquipmentUpdateDTO) {
+        equipment.apply {
+            name = equipmentDto.name ?: name
+            description = equipmentDto.description ?: description
+            suggestedPriceGp = equipmentDto.suggestedPriceGp ?: suggestedPriceGp
+            weight = equipmentDto.weight ?: weight
+        }
     }
 
-    fun merge(npc: Npc, npcDto: NpcUpdateDTO): Npc = npc.run {
-        Npc(
-            npcDto.name ?: name, npcDto.description ?: description, npcDto.health ?: health,
-            npcDto.alignment ?: alignment,
-            npcDto.npcClassId?.let { Class.findById(it) ?: throw NotFoundException() } ?: classField,
-            npcDto.npcRaceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: race,
-            npcDto.isHostile ?: isHostile, npcDto.role ?: role,
-            npcDto.locationId?.let { Location.findById(it) ?: throw NotFoundException() } ?: location
-        )
+    fun merge(ci: CharacterInventory, ciDto: CharacterInventoryUpdateDTO) {
+        ci.apply { amount = ciDto.amount }
+    }
+
+    fun merge(npc: Npc, npcDto: NpcUpdateDTO) {
+        npc.apply {
+            name = npcDto.name ?: name
+            description = npcDto.description ?: description
+            health = npcDto.health ?: health
+            alignment = npcDto.alignment ?: alignment
+            classField = npcDto.npcClassId?.let { Class.findById(it) ?: throw NotFoundException() } ?: classField
+            race = npcDto.npcRaceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: race
+            isHostile = npcDto.isHostile ?: isHostile
+            role = npcDto.role ?: role
+            location = npcDto.locationId?.let { Location.findById(it) ?: throw NotFoundException() } ?: location
+        }
     }
 }

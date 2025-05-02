@@ -11,17 +11,22 @@ open class Character(
     @Column(nullable = false)
     var name: String,
 
+    @Column(columnDefinition = "TEXT")
     var background: String?,
 
+    @Column(columnDefinition = "TEXT")
     var ideals: String?,
 
+    @Column(columnDefinition = "TEXT")
     var bonds: String?,
 
+    @Column(columnDefinition = "TEXT")
     var flaws: String?,
 
+    @Column(columnDefinition = "TEXT")
     var imageURI: String?,
 
-    @Column(name = "personality_traits")
+    @Column(columnDefinition = "TEXT", name = "personality_traits")
     var personalityTraits: String?,
 
     var alignment: Alignment,
@@ -34,15 +39,15 @@ open class Character(
     @JoinColumn(nullable = false)
     var race: Race,
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ability_bonus", nullable = false)
-    var abilityBonus: RaceAbilityBonus,
+    var stats: MutableList<Int>,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
     var createdBy: User
 
 ) : BaseEntity() {
+
+    override fun isTrusted(sub: String) = createdBy == User.findBySub(sub)
 
     companion object : PanacheCompanion<Character>
 

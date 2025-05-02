@@ -6,9 +6,9 @@ import com.dndmanager.dto.SessionFindDTO
 import com.dndmanager.dto.SessionGetDTO
 import com.dndmanager.dto.SessionUpdateDTO
 import com.dndmanager.service.additional.ConverterService
-import io.quarkus.panache.common.Sort
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
+import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
 import org.eclipse.microprofile.jwt.JsonWebToken
 
@@ -17,19 +17,16 @@ class SessionService : BaseService<SessionCreatDTO, SessionGetDTO, SessionFindDT
 
     override val converter = ConverterService()
 
-    override fun getById(id: Long, user: JsonWebToken): SessionGetDTO {
-        val session = Session.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(session)
-    }
+    override fun getById(id: Long, user: JsonWebToken): SessionGetDTO =
+        Session.findById(id)?.let { converter.toGetDTO(it) } ?: throw NotFoundException()
 
-    override fun getAll(user: JsonWebToken): List<SessionFindDTO> {
-        val sessions = Session.listAll(Sort.by("name"))
-        return sessions.map { converter.toFindDTO(it) }
-    }
+    override fun getAll(user: JsonWebToken): List<SessionFindDTO> =
+        Session.list("author.sub = ?1", user.subject).map { converter.toFindDTO(it) }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
         val session = Session.findById(id) ?: throw NotFoundException()
+        if (!session.isTrusted(user.subject)) throw ForbiddenException()
         session.delete()
     }
 
@@ -42,9 +39,9 @@ class SessionService : BaseService<SessionCreatDTO, SessionGetDTO, SessionFindDT
 
     @Transactional
     override fun update(id: Long, dto: SessionUpdateDTO, user: JsonWebToken): SessionGetDTO {
-        var session = Session.findById(id) ?: throw NotFoundException()
-        session = converter.merge(session, dto)
-        session.persistAndFlush()
+        val session = Session.findById(id) ?: throw NotFoundException()
+        if (!session.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(session, dto)
         return converter.toGetDTO(session)
     }
 }

@@ -8,26 +8,30 @@ import com.dndmanager.dto.CharacterUpdateDTO
 import com.dndmanager.service.additional.ConverterService
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
+import jakarta.ws.rs.ForbiddenException
 import jakarta.ws.rs.NotFoundException
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Response
 import org.eclipse.microprofile.jwt.JsonWebToken
+import java.util.Locale.getDefault
 
 @ApplicationScoped
 class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, CharacterFindDTO, CharacterUpdateDTO> {
 
     override val converter = ConverterService()
 
-    override fun getById(id: Long, user: JsonWebToken): CharacterGetDTO {
-        val character = Character.findById(id) ?: throw NotFoundException()
-        return converter.toGetDTO(character)
-    }
+    override fun getById(id: Long, user: JsonWebToken): CharacterGetDTO =
+        converter.toGetDTO(Character.findById(id) ?: throw NotFoundException())
 
-    override fun getAll(user: JsonWebToken): List<CharacterFindDTO> {
-        return Character.listAll().map { converter.toFindDTO(it) }
-    }
+    override fun getAll(user: JsonWebToken): List<CharacterFindDTO> =
+        Character.find("createdBy.sub = ?1", user.subject).list().map { converter.toFindDTO(it) }
 
     @Transactional
     override fun delete(id: Long, user: JsonWebToken) {
         val character = Character.findById(id) ?: throw NotFoundException()
+        if (!character.isTrusted(user.subject)) throw ForbiddenException()
+        if (SessionCharacter.streamAll().anyMatch { c -> c.character.id == character.id })
+            throw WebApplicationException(Response.Status.CONFLICT)
         character.delete()
     }
 
@@ -35,8 +39,7 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
     override fun create(dto: CharacterCreateDTO, user: JsonWebToken): CharacterGetDTO {
         if (Race.findById(dto.raceId) == null) throw NotFoundException()
         if (Class.findById(dto.classId) == null) throw NotFoundException()
-        if (RaceAbilityBonus.findById(dto.raceAbilityId) == null) throw NotFoundException()
-        val user: User = User.find("sub = ?1", dto.createdBy).firstResult() ?: throw NotFoundException()
+        val user: User = User.find("sub = ?1", user.name).firstResult() ?: throw NotFoundException()
         val character = converter.toEntity(user, dto)
         character.persistAndFlush()
         return converter.toGetDTO(character)
@@ -44,9 +47,16 @@ class CharacterService : BaseService<CharacterCreateDTO, CharacterGetDTO, Charac
 
     @Transactional
     override fun update(id: Long, dto: CharacterUpdateDTO, user: JsonWebToken): CharacterGetDTO {
-        var character = Character.findById(id) ?: throw NotFoundException()
-        character = converter.merge(character, dto)
-        character.persistAndFlush()
+        val character = Character.findById(id) ?: throw NotFoundException()
+        if (!character.isTrusted(user.subject)) throw ForbiddenException()
+        converter.merge(character, dto)
         return converter.toGetDTO(character)
+    }
+
+    fun findByNameAndUsername(name: String, userSub: String): List<CharacterFindDTO> {
+        val user: User = User.findBySub(userSub) ?: throw NotFoundException()
+        val res = Character.list("createdBy = ?1 and lower(name) LIKE ?2", user, name.lowercase(getDefault()) + "%")
+            .map { converter.toFindDTO(it) }
+        return res
     }
 }
