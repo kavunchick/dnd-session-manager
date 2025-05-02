@@ -14,6 +14,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    volumes:
+      - "./db/create.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./db/insert.sql:/docker-entrypoint-initdb.d/2.sql"
     networks:
       - dnd-net
 
@@ -27,15 +30,7 @@ services:
       - db
     networks:
       - dnd-net
-    entrypoint: >
-      sh -c "
-        until (echo > /dev/tcp/db/5432) >/dev/null 2>&1; do
-          echo '⏳ waiting for postgres…';
-          sleep 2;
-        done
-        echo '✅ postgres is up – launching backend…';
-        /opt/jboss/container/java/run/run-java.sh
-      "
+    restart: always
     environment:
       - DB_HOST=db
       - DB_NAME=dnd
@@ -57,4 +52,3 @@ services:
 networks:
   dnd-net:
     driver: bridge
-
