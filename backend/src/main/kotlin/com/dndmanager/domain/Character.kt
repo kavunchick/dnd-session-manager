@@ -40,10 +40,6 @@ open class Character(
     var race: Race,
 
     var stats: MutableList<Int>,
-//
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "ability_bonus", nullable = false)
-//    var abilityBonus: RaceAbilityBonus,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id", nullable = false)

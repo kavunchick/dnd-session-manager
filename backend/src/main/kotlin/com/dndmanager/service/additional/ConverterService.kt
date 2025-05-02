@@ -33,7 +33,6 @@ class ConverterService {
             name, background, ideals, bonds, flaws, image, traits, alignment,
             Class.findById(classId) ?: throw NotFoundException(),
             Race.findById(raceId) ?: throw NotFoundException(), stats, user
-//            RaceAbilityBonus.findById(raceAbilityId) ?: throw NotFoundException(), user
         )
     }
 
@@ -88,7 +87,6 @@ class ConverterService {
         CharacterGetDTO(
             id ?: 0, name, background, ideals, bonds, flaws, imageURI, personalityTraits, alignment,
             toFindDTO(characterClass), stats, toFindDTO(race),
-//            toFindDTO(abilityBonus)
         )
     }
 
@@ -199,8 +197,6 @@ class ConverterService {
                 ?: character.characterClass
             race = characterDto.raceId?.let { Race.findById(it) ?: throw NotFoundException() } ?: character.race
             stats = characterDto.stats ?: stats
-//            characterDto.raceAbilityId?.let { RaceAbilityBonus.findById(it) ?: throw NotFoundException() }
-//                ?: character.abilityBonus,
         }
     }
 

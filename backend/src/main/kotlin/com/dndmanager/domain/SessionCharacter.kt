@@ -19,10 +19,6 @@ open class SessionCharacter (
 
     var money: MutableList<Int>,
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "abilities_id", nullable = false)
-//    var abilities: CharacterAbility,
-
     @Column(nullable = false)
     var level: Short,
 

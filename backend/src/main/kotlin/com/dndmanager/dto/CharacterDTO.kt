@@ -14,7 +14,6 @@ data class CharacterCreateDTO(
     val raceId: Long,
     val traits: String?,
     val stats: MutableList<Int>,
-//    val raceAbilityId: Long,
     ) : BaseCreateDTO()
 
 data class CharacterUpdateDTO(
@@ -29,7 +28,6 @@ data class CharacterUpdateDTO(
     val classId: Long?,
     val raceId: Long?,
     val stats: MutableList<Int>?,
-//    val raceAbilityId: Long?
 ) : BaseUpdateDTO()
 
 data class CharacterFindDTO(
@@ -60,5 +58,4 @@ data class CharacterGetDTO(
     val characterClass: ClassFindDTO,
     val stats: MutableList<Int>,
     val characterRace: RaceFindDTO,
-//    val raceAbilityBonus: RaceAbilityBonusFindDTO
 ) : BaseGetDTO()
